@@ -17,7 +17,7 @@ class MockSyntheticSinusData(IDataSource):
         return self.generate_synthetic_data()
 
     def generate_synthetic_data(self) -> pd.DataFrame:
-        amplitude = 50
+        amplitude = 500
         frequenz = 0.01
         days = 365
         offset = 501

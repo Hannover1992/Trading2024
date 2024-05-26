@@ -15,11 +15,12 @@ def train_ddpg(env, agent, num_episodes):
 
         normalized_state = env.normalize_state(state)
 
+        first = True
         while not done:
             if episode % EXPLOITAION == 0:
-                action = agent.choose_action_evaluate(normalized_state)
+                action = agent.choose_action_evaluate(state)
             else:
-                action = agent.choose_action_train(normalized_state, episode)
+                action = agent.choose_action_train(state, episode)
             new_state, reward, done, _ = env.step(action)
 
 
@@ -38,9 +39,14 @@ def train_ddpg(env, agent, num_episodes):
             })
 
 
-            normalized_reward = env.normalize_reward(reward)
-            agent.remember(state, action, normalized_reward, new_state, done)
-            agent.learn()
+            # normalized_reward = env.normalize_reward(reward)
+            normalized_reward = reward
+            
+            if(first):
+                first = False
+            else:
+                agent.remember(normalized_state, action, normalized_reward, new_state, done)
+                agent.learn()
 
             state = new_state
             episode_reward += reward

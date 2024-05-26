@@ -79,7 +79,6 @@ class Agent:
         self.target_critic.load_weights(self.target_critic.checkpoint_file)
 
     def choose_action_evaluate(self, observation):
-        print("Observation Length: ", len(observation))
         actions = self.get_action_given_state(observation)
         return actions
 
@@ -116,7 +115,6 @@ class Agent:
             critic_value = tf.squeeze(self.critic(states, actions), 1)
             target = rewards + self.gamma * critic_value_ * (1 - dones)
             critic_loss = keras.losses.MSE(target, critic_value)
-            print("Critic Loss: ", critic_loss)
 
         critic_network_gradient = tape.gradient(critic_loss, self.critic.trainable_variables)
         self.critic.optimizer.apply_gradients(zip(critic_network_gradient, self.critic.trainable_variables))

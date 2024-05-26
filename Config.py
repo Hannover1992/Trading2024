@@ -1,7 +1,7 @@
 import datetime
 import random
 
-ALPHA = 0.01039
+ALPHA = 0.00139
 BETA = ALPHA * 2
 TAU = ALPHA * 5
 FC1 = 150
@@ -9,8 +9,8 @@ FC2 = 50
 BATCH_SIZE = 72
 EXPLOITAION = 2
 ITERATION = 100
-NOISE = 0.9
-GAMMA = 0.3
+NOISE = 0.7
+GAMMA = 0.99
 WINDOW_SIZE = 70
 
 class Configuration:

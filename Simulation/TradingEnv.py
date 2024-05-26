@@ -45,7 +45,6 @@ class TradingEnv():
 
         price = self.data['Preis'].iloc[self.current_step]
         
-        print(action)
         volume = float(action[0].numpy())
         if volume > 0.5:
             if(self.cash >= 0.0):
@@ -77,18 +76,16 @@ class TradingEnv():
         new_state = self.state.get_state()
         new_state = self.normalize_state(new_state)
 
-        print("Cash:", self.cash)
-        print("Shares:", self.shares)
         reward = self.reward_calculator.calculate_reward(previous_state, new_state)
 
         # self.current_amount_of_value_in_shares_and_cash = self.cash + self.shares * price
         # reward = self.previous_amount_of_value_in_shares_and_cash - self.current_amount_of_value_in_shares_and_cash
-        print("Reward:", reward)
 
         self.current_step += 1
         done = self.current_step >= len(self.data) - 1
         info = {}
-        self.previous_amount_of_value_in_shares_and_cash = self.current_amount_of_value_in_shares_and_cash
+        # print(f"Action: {action[0].numpy():<10.2f} | Reward: {reward:<10.5f} | Cash: {self.cash:<15.2f} | Shares: {self.shares:<15.2f} | Price: {price:<10.2f} | Volume: {self.volume:<10.2f}")
+        # besser formatiert mit fest definierten abstanden
 
         return new_state, reward, done,  info  # False is added for truncated
 
