@@ -109,8 +109,6 @@ class Agent:
     def get_action_given_state(self, observation):
         state = tf.convert_to_tensor([observation], dtype=tf.float32)
         actions = self.actor(state)
-        if (self.has_negative_value(actions)):
-            print("the action has negative value")
         return actions
 
     def has_negative_value(self, tensor):

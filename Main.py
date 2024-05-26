@@ -4,6 +4,8 @@ from Agent.ddpg_tf2 import Agent
 from Config import Configuration
 
 def train_ddpg(env, agent, num_episodes):
+
+
     for episode in range(num_episodes):
         state, _ = env.reset()
         done = False
