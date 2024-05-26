@@ -6,6 +6,8 @@ from Printer.SimulationPrinter import SimulationPrinter
 
 def train_ddpg(env, agent, num_episodes):
     for episode in range(num_episodes):
+        if(episode == 0):
+            episode = 1
         state, _ = env.reset()
         done = False
         episode_reward = 0
@@ -15,13 +17,14 @@ def train_ddpg(env, agent, num_episodes):
 
         while not done:
             if episode % EXPLOITAION == 0:
-                action = agent.choose_action_evaluate(state)
+                action = agent.choose_action_evaluate(normalized_state)
             else:
                 action = agent.choose_action_train(normalized_state, episode)
             new_state, reward, done, _ = env.step(action)
 
 
-            signal, volume = agent.get_signal_from_action(state)
+            signal, volume = agent.get_signal_from_action(action)
+            volume = env.volume
             # Save the history for plotting
             simulation_history.append({
                 'State': state,
@@ -33,9 +36,6 @@ def train_ddpg(env, agent, num_episodes):
                 'Reward': reward,
                 'Next State': new_state
             })
-
-
-            new_state = env.normalize_state(new_state)
 
 
             normalized_reward = env.normalize_reward(reward)
@@ -54,7 +54,7 @@ def train_ddpg(env, agent, num_episodes):
             simulation = TradingSimulation(10000)
             simulation.data = env.data
             simulation.history = simulation_history
-            SimulationPrinter.plot_results(simulation)
+            # SimulationPrinter.plot_results(simulation)
 
 if __name__ == "__main__":
     # Environment setup

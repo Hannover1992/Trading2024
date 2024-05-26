@@ -10,7 +10,7 @@ class Agent:
         self.gamma = config.gamma
         self.tau = config.tau
         self.max_size = config.iteration
-        self.input_dims = input_dims
+        self.input_dims = env.observation_space.shape[0]
         self.n_actions = env.action_space.shape[0]
 
         self.noise_initial = config.noise
@@ -79,8 +79,9 @@ class Agent:
         self.target_critic.load_weights(self.target_critic.checkpoint_file)
 
     def choose_action_evaluate(self, observation):
+        print("Observation Length: ", len(observation))
         actions = self.get_action_given_state(observation)
-        return actions[0]
+        return actions
 
     def choose_action_train(self, observation, episode):
         actions = self.get_action_given_state(observation)
@@ -95,7 +96,7 @@ class Agent:
     def get_action_given_state(self, observation):
         state = tf.convert_to_tensor([observation], dtype=tf.float32)
         actions = self.actor(state)
-        return actions
+        return actions[0]
 
     def learn(self):
         if self.memory.mem_cntr < self.batch_size:
@@ -115,6 +116,7 @@ class Agent:
             critic_value = tf.squeeze(self.critic(states, actions), 1)
             target = rewards + self.gamma * critic_value_ * (1 - dones)
             critic_loss = keras.losses.MSE(target, critic_value)
+            print("Critic Loss: ", critic_loss)
 
         critic_network_gradient = tape.gradient(critic_loss, self.critic.trainable_variables)
         self.critic.optimizer.apply_gradients(zip(critic_network_gradient, self.critic.trainable_variables))
@@ -130,7 +132,7 @@ class Agent:
         self.update_network_parameters()
 
     def get_signal_from_action(self, action):
-        action_value = action[0]
+        action_value = float(action[0])
         if action_value < -0.5:
             return Signal.SELL, (action_value + 1) / 0.5  # Scale to [0, 1]
         elif action_value < 0.5:

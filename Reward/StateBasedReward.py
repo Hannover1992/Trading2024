@@ -1,6 +1,4 @@
-from Reward.RewardCalculator import RewardCalculator
-
-class ValueBasedReward(RewardCalculator):
+class StateBasedReward():
 
     def calculate_reward(self, previous_state, current_state):
         previous_value = self.balance + self.shares * previous_state[-1]
