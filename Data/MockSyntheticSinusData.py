@@ -20,9 +20,10 @@ class MockSyntheticSinusData(IDataSource):
         amplitude = 500
         frequenz = 0.01
         days = 365
+        offset = 501
 
         t = np.arange(0, days)
-        price = amplitude * np.sin(2 * np.pi * frequenz * t)
+        price = amplitude * np.sin(2 * np.pi * frequenz * t) + offset
         return pd.DataFrame({'Tage': t, 'Preis': price})
 
     def plot_synthetic_data(self, data: pd.DataFrame):
