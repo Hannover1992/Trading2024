@@ -26,7 +26,7 @@ if __name__ == "__main__":
     env = TradingEnv()
 
     # DDPG Agent setup
-    config = Configuration(alpha=0.001, beta=0.002, tau=0.005, fc1=400, fc2=300, batch_size=64, noise=0.1, gamma=0.99, load_checkpoint=False, steps=10000)
+    config = Configuration(alpha=0.01, beta=0.02, tau=0.005, fc1=400, fc2=300, batch_size=64, noise=0.9, gamma=0.99, load_checkpoint=False, steps=20)
     agent = Agent(input_dims=env.observation_space.shape, n_actions=env.action_space.shape[0], env=env, **vars(config))
 
     # Train the agent
