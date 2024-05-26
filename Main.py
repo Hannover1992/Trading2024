@@ -54,7 +54,10 @@ def main():
     processes = []
 
     for i in range(num_processes):
-        learning_rate = random.uniform(ALPHA_MIN, ALPHA_MAX)
+        #abtasten geliche abstand zwiche nalpah mi nund alph max 
+        alpha = ALPHA_MIN + (ALPHA_MAX - ALPHA_MIN) / num_processes * i
+        # learning_rate = random.uniform(ALPHA_MIN, ALPHA_MAX)
+        learning_rate = alpha
         process = multiprocessing.Process(target=run_training_process, args=(i, learning_rate))
         processes.append(process)
         process.start()
