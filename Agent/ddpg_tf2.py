@@ -18,14 +18,15 @@ class Agent:
         self.input_dims = input_dims
         self.n_actions = n_actions
 
+        self.noise_initial = noise
+        self.noise_final = 0.0
+        self.noise_decay_episodes = 1000
 
         self.memory = ReplayBuffer(max_size, input_dims, n_actions)
         self.batch_size = batch_size
         self.n_actions = n_actions
-        self.noise = noise
         self.max_action = env.action_space.high[0]
         self.min_action = env.action_space.low[0]
-        # toDo: make differren max min for differrent aciton PID
 
         self.actor = ActorNetwork(n_actions=n_actions, name='actor',
                                   unique_name=unique_name,
@@ -51,8 +52,6 @@ class Agent:
         self.update_network_parameters(tau=1)
 
     def __del__(self):
-        # Clearing TensorFlow graphs or any other resources if needed
-        # For instance:
         del self.memory
 
     def update_network_parameters(self, tau=None):
@@ -72,8 +71,6 @@ class Agent:
         self.target_critic.set_weights(weights)
 
     def remember(self, state, action, reward, new_state, done):
-        # if eny reward has -1.0 and 1.0 then
-        # self.memory = ReplayBuffer(max_size, input_dims, n_actions)
         if reward == 1.0 or reward == -1.0:
             self.memory = ReplayBuffer(self.max_size, self.input_dims, self.n_actions)
         else:
@@ -97,17 +94,17 @@ class Agent:
         actions = self.get_action_given_state(observation)
         return actions[0]
 
-
-    def choose_action_train(self, observation, i):
+    def choose_action_train(self, observation, episode):
         actions = self.get_action_given_state(observation)
-        if i % EXPLOITAION != 0:
-            actions += tf.random.normal(shape=[self.n_actions], mean=0.0, stddev=self.noise)
+        current_noise = self.calculate_noise(episode)
+        if episode % EXPLOITAION != 0:
+            actions += tf.random.normal(shape=[self.n_actions], mean=0.0, stddev=current_noise)
 
         return actions
 
-
-    # toDo: clipping auf individuelle min max of anpasse. BZW zu hoche werte bestrafen
-
+    def calculate_noise(self, episode):
+        noise = max(self.noise_final, self.noise_initial - (self.noise_initial - self.noise_final) * (episode / self.noise_decay_episodes))
+        return noise
 
     def get_action_given_state(self, observation):
         state = tf.convert_to_tensor([observation], dtype=tf.float32)
@@ -116,19 +113,14 @@ class Agent:
             print("the action has negative value")
         return actions
 
-    # toDo: mozesz sprawdzic czy umi sie uczyc, gdy pid werte sind negative, dann reward = 0
-
-
     def has_negative_value(self, tensor):
         return bool(tf.reduce_any(tensor < 0).numpy())
-
 
     def learn(self):
         if self.memory.mem_cntr < self.batch_size:
             return
 
-        state, action, reward, new_state, done = \
-            self.memory.sample_buffer(self.batch_size)
+        state, action, reward, new_state, done = self.memory.sample_buffer(self.batch_size)
 
         states = tf.convert_to_tensor(state, dtype=tf.float32)
         states_ = tf.convert_to_tensor(new_state, dtype=tf.float32)
@@ -137,25 +129,20 @@ class Agent:
 
         with tf.GradientTape() as tape:
             target_actions = self.target_actor(states_)
-            critic_value_ = tf.squeeze(self.target_critic(
-                states_, target_actions), 1)
+            critic_value_ = tf.squeeze(self.target_critic(states_, target_actions), 1)
             critic_value = tf.squeeze(self.critic(states, actions), 1)
-            target = rewards + self.gamma*critic_value_*(1-done)
+            target = rewards + self.gamma * critic_value_ * (1 - done)
             critic_loss = keras.losses.MSE(target, critic_value)
 
-        critic_network_gradient = tape.gradient(critic_loss,
-                                                self.critic.trainable_variables)
-        self.critic.optimizer.apply_gradients(zip(
-            critic_network_gradient, self.critic.trainable_variables))
+        critic_network_gradient = tape.gradient(critic_loss, self.critic.trainable_variables)
+        self.critic.optimizer.apply_gradients(zip(critic_network_gradient, self.critic.trainable_variables))
 
         with tf.GradientTape() as tape:
             new_policy_actions = self.actor(states)
             actor_loss = -self.critic(states, new_policy_actions)
             actor_loss = tf.math.reduce_mean(actor_loss)
 
-        actor_network_gradient = tape.gradient(actor_loss,
-                                               self.actor.trainable_variables)
-        self.actor.optimizer.apply_gradients(zip(
-            actor_network_gradient, self.actor.trainable_variables))
+        actor_network_gradient = tape.gradient(actor_loss, self.actor.trainable_variables)
+        self.actor.optimizer.apply_gradients(zip(actor_network_gradient, self.actor.trainable_variables))
 
         self.update_network_parameters()
