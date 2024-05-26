@@ -98,7 +98,7 @@ class TradingEnv():
         max_state = self.data['Preis'].max()
         normalize = (state - min_state) / (max_state - min_state)
         # ich wrude geren alle werte ausser dem ersten in dem state normalisieren
-        normalize[0] = state[0]
+        # normalize[0] = state[0]
         return normalize 
 
     def normalize_reward(self, reward):

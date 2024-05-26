@@ -1,67 +1,36 @@
 from Simulation.TradingEnv import TradingEnv  # Ensure this path is correct
 from Agent.ddpg_tf2 import Agent
 from Config import EXPLOITAION, Configuration
-from Simulation.TradingSimulation import TradingSimulation  # Ensure this path is correct
-from Printer.SimulationPrinter import SimulationPrinter
+from Simulation.TradingEnv import TradingEnv  # Ensure this path is correct
+from Agent.ddpg_tf2 import Agent
+from Config import Configuration
 
-def train_ddpg(env, agent, num_episodes):
-    for episode in range(num_episodes):
-        state, _ = env.reset()
-        done = False
-        episode_reward = 0
-        simulation_history = []
+def train_ddpg(env, agent, num_episodes, instance_id):
+    # Open the file in append mode
+    with open(f"ergebnis_{instance_id}.txt", "a") as file:
+        for episode in range(num_episodes):
+            state, _ = env.reset()
+            done = False
+            episode_reward = 0
 
-        normalized_state = env.normalize_state(state)
+            while not done:
+                if episode % EXPLOITAION == 0:
+                    action = agent.choose_action_evaluate(state)
+                else:
+                    action = agent.choose_action_train(state, episode)
+                new_state, reward, done, _ = env.step(action)
+                agent.remember(state, action, reward, new_state, done)
 
-        first = True
-        while not done:
-            if episode % EXPLOITAION == 0:
-                action = agent.choose_action_evaluate(state)
-            else:
-                action = agent.choose_action_train(state, episode)
-            new_state, reward, done, _ = env.step(action)
-
-
-            signal, volume = agent.get_signal_from_action(action)
-            volume = env.volume
-            # Save the history for plotting
-            simulation_history.append({
-                'State': state,
-                'Action': signal.name,                
-                'Action Volume': volume,
-                'Price': env.data['Preis'].iloc[env.current_step],
-                'Shares': env.shares,
-                'Balance': env.cash,
-                'Reward': reward,
-                'Next State': new_state
-            })
-
-
-            # normalized_reward = env.normalize_reward(reward)
-            normalized_reward = reward
-            
-            if(first):
-                first = False
-            else:
-                agent.remember(normalized_state, action, normalized_reward, new_state, done)
                 agent.learn()
+                state = new_state
+                episode_reward += reward
 
-            state = new_state
-            episode_reward += reward
+            agent.decay_noise(episode)
+            if episode % EXPLOITAION == 0:
+                file.write(f"Episode {episode + 1}/{num_episodes}, Reward: {episode_reward}\n")
+                print(f"Episode {episode + 1}/{num_episodes}, Reward: {episode_reward}")
 
-        agent.decay_noise(episode)
-        
-        print(f"Episode {episode + 1}/{num_episodes}, Reward: {episode_reward}")
-        if episode % EXPLOITAION == 0:
-            if(episode != 0):
-                print(f"Evaluation: {episode_reward}")
-                # Plot the results using SimulationPrinter
-                simulation = TradingSimulation(10000)
-                simulation.data = env.data
-                simulation.history = simulation_history
-                SimulationPrinter.plot_results(simulation)
-
-if __name__ == "__main__":
+def run_training_process(instance_id):
     # Environment setup
     env = TradingEnv()
 
@@ -70,4 +39,22 @@ if __name__ == "__main__":
     agent = Agent(input_dims=env.observation_space.shape, env=env, config=config)
 
     # Train the agent
-    train_ddpg(env, agent, config.iteration)
+    train_ddpg(env, agent, config.iteration, instance_id)
+    print(f"Training instance {instance_id} completed")
+
+def main():
+    import multiprocessing
+
+    num_processes = 1
+    processes = []
+
+    for i in range(num_processes):
+        process = multiprocessing.Process(target=run_training_process, args=(i,))
+        processes.append(process)
+        process.start()
+
+    for process in processes:
+        process.join()
+
+if __name__ == "__main__":
+    main()
