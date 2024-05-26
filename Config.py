@@ -1,20 +1,25 @@
 import datetime
 import random
 
-ALPHA = 0.000139
+ALPHA = 0.0001
 BETA = ALPHA * 2
 TAU = ALPHA * 5
 FC1 = 150
 FC2 = 50
 BATCH_SIZE = 72
-EXPLOITAION = 1
-ITERATION = 100
+EXPLOITAION = 5
+ITERATION = 1000
 NOISE = 0.9
 GAMMA = 0.99
 WINDOW_SIZE = 70
 
+ALPHA_MIN = 0.000001
+ALPHA_MAX = 0.1
+
 class Configuration:
-    def __init__(self):
+    def __init__(self, learning_rate):
+        ALPHA = learning_rate
+        ALPHA = random.uniform(ALPHA_MIN, ALPHA_MAX)
         self.unique_name = "Stefan"
         self.alpha = ALPHA
         self.beta = BETA

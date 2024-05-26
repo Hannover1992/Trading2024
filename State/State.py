@@ -5,11 +5,11 @@ class State:
     def __init__(self,  price, size=WINDOW_SIZE,):
         self.size = size
         self.stack = deque([price] * size, maxlen=size)
-        self.stack[0] = -1.0
+        # self.stack[0] = -1.0
 
     def push(self, price, balance):
         self.stack.append(price)
-        self.stack[0] = balance
+        # self.stack[0] = balance
 
     def get_state(self):
         return list(self.stack)

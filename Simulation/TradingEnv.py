@@ -46,30 +46,21 @@ class TradingEnv():
         price = self.data['Preis'].iloc[self.current_step]
         
         volume = float(action[0].numpy())
-        if volume > 0.5:
+
+        if volume >= 0.0:
             if(self.cash >= 0.0):
-                volume_temp = (volume - 0.5)*2
-                amount_to_invest = self.cash * volume_temp
-
-                if(amount_to_invest >= self.cash):
-                    amount_to_invest = self.cash
-
+                amount_to_invest = self.cash * volume
                 shares_to_buy = amount_to_invest / price
                 self.cash -= amount_to_invest
                 self.shares += shares_to_buy
-                self.volume = volume_temp
-        if volume < -0.5:
+                self.volume = volume
+        else:
             if(self.shares > 0.0):
-                volume_temp = (volume + 0.5)*2
-                shares_to_sell = self.shares * volume_temp
-                if shares_to_sell > self.shares:
-                    shares_to_sell = self.shares
+                shares_to_sell = self.shares * volume
                 amount_received = -shares_to_sell * price
                 self.shares += shares_to_sell
                 self.cash += amount_received
                 self.volume = volume
-        if volume < 0.5 and volume > -0.5:
-            self.volume = 0.0
 
         new_balance_ratio = self.state.calculate_balance_ratio(self.cash, self.shares, price)
         self.state.push(price, new_balance_ratio)
@@ -106,3 +97,31 @@ class TradingEnv():
         max_reward = 10000
         return (reward - min_reward) / (max_reward - min_reward)
 
+
+
+
+# HOLD VOLUME
+        # if volume > 0.5:
+        #     if(self.cash >= 0.0):
+        #         volume_temp = (volume - 0.5)*2
+        #         amount_to_invest = self.cash * volume_temp
+        #
+        #         if(amount_to_invest >= self.cash):
+        #             amount_to_invest = self.cash
+        #
+        #         shares_to_buy = amount_to_invest / price
+        #         self.cash -= amount_to_invest
+        #         self.shares += shares_to_buy
+        #         self.volume = volume_temp
+        # if volume < -0.5:
+        #     if(self.shares > 0.0):
+        #         volume_temp = (volume + 0.5)*2
+        #         shares_to_sell = self.shares * volume_temp
+        #         if shares_to_sell > self.shares:
+        #             shares_to_sell = self.shares
+        #         amount_received = -shares_to_sell * price
+        #         self.shares += shares_to_sell
+        #         self.cash += amount_received
+        #         self.volume = volume
+        # if volume < 0.5 and volume > -0.5:
+        #     self.volume = 0.0
