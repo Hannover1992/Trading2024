@@ -60,7 +60,7 @@ def train_ddpg(env, agent, num_episodes):
             simulation = TradingSimulation(10000)
             simulation.data = env.data
             simulation.history = simulation_history
-            # SimulationPrinter.plot_results(simulation)
+            SimulationPrinter.plot_results(simulation)
 
 if __name__ == "__main__":
     # Environment setup
