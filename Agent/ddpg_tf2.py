@@ -1,58 +1,49 @@
 import tensorflow as tf
 import tensorflow.keras as keras
 from tensorflow.keras.optimizers import Adam
-
 from Agent.buffer import ReplayBuffer
 from Agent.networks import ActorNetwork, CriticNetwork
-from Config import EXPLOITAION
-
+from State.Signal import Signal
 
 class Agent:
-    def __init__(self, input_dims, alpha=0.001, beta=0.002, env=None,
-                 gamma=0.99, n_actions=2, max_size=1000, tau=0.005,
-                 fc1=400, fc2=300, batch_size=64, noise=0.1, unique_name='hades', load_checkpoint=True, steps=0):
-        self.gamma = gamma
-        self.tau = tau
-
-        self.max_size = int(max_size)
+    def __init__(self, input_dims, env, config):
+        self.gamma = config.gamma
+        self.tau = config.tau
+        self.max_size = config.iteration
         self.input_dims = input_dims
-        self.n_actions = n_actions
+        self.n_actions = env.action_space.shape[0]
 
-        self.noise_initial = noise
+        self.noise_initial = config.noise
         self.noise_final = 0.0
-        self.noise_decay_episodes = 1000
+        self.noise_decay_episodes = config.iteration
 
-        self.memory = ReplayBuffer(max_size, input_dims, n_actions)
-        self.batch_size = batch_size
-        self.n_actions = n_actions
+        self.current_noise = self.noise_initial
+        self.max_iterations = config.iteration
+
+        self.memory = ReplayBuffer(config.iteration, input_dims, self.n_actions)
+        self.batch_size = config.batch_size
         self.max_action = env.action_space.high[0]
         self.min_action = env.action_space.low[0]
 
-        self.actor = ActorNetwork(n_actions=n_actions, name='actor',
-                                  unique_name=unique_name,
-                                    fc1_dims=fc1, fc2_dims=fc2
-                                  )
+        self.actor = ActorNetwork(n_actions=self.n_actions, name='actor',
+                                  unique_name=config.unique_name,
+                                  fc1_dims=config.fc1, fc2_dims=config.fc2)
         self.critic = CriticNetwork(name='critic',
-                                    unique_name=unique_name,
-                                    fc1_dims=fc1, fc2_dims=fc2
-                                    )
-        self.target_actor = ActorNetwork(n_actions=n_actions,
-                                         fc1_dims=fc1, fc2_dims=fc2,
+                                    unique_name=config.unique_name,
+                                    fc1_dims=config.fc1, fc2_dims=config.fc2)
+        self.target_actor = ActorNetwork(n_actions=self.n_actions,
+                                         fc1_dims=config.fc1, fc2_dims=config.fc2,
                                          name='target_actor',
-                                         unique_name=unique_name,
-                                         )
+                                         unique_name=config.unique_name)
         self.target_critic = CriticNetwork(name='target_critic',
-                                           unique_name=unique_name,
-                                           fc1_dims=fc1, fc2_dims=fc2)
+                                           unique_name=config.unique_name,
+                                           fc1_dims=config.fc1, fc2_dims=config.fc2)
 
-        self.actor.compile(optimizer=Adam(learning_rate=alpha))
-        self.critic.compile(optimizer=Adam(learning_rate=beta))
-        self.target_actor.compile(optimizer=Adam(learning_rate=alpha))
-        self.target_critic.compile(optimizer=Adam(learning_rate=beta))
+        self.actor.compile(optimizer=Adam(learning_rate=config.alpha))
+        self.critic.compile(optimizer=Adam(learning_rate=config.beta))
+        self.target_actor.compile(optimizer=Adam(learning_rate=config.alpha))
+        self.target_critic.compile(optimizer=Adam(learning_rate=config.beta))
         self.update_network_parameters(tau=1)
-
-    def __del__(self):
-        del self.memory
 
     def update_network_parameters(self, tau=None):
         if tau is None:
@@ -61,20 +52,17 @@ class Agent:
         weights = []
         targets = self.target_actor.weights
         for i, weight in enumerate(self.actor.weights):
-            weights.append(weight * tau + targets[i]*(1-tau))
+            weights.append(weight * tau + targets[i] * (1 - tau))
         self.target_actor.set_weights(weights)
 
         weights = []
         targets = self.target_critic.weights
         for i, weight in enumerate(self.critic.weights):
-            weights.append(weight * tau + targets[i]*(1-tau))
+            weights.append(weight * tau + targets[i] * (1 - tau))
         self.target_critic.set_weights(weights)
 
     def remember(self, state, action, reward, new_state, done):
-        if reward == 1.0 or reward == -1.0:
-            self.memory = ReplayBuffer(self.max_size, self.input_dims, self.n_actions)
-        else:
-            self.memory.store_transition(state, action, reward, new_state, done)
+        self.memory.store_transition(state, action, reward, new_state, done)
 
     def save_models(self):
         print('... saving models ...')
@@ -96,23 +84,18 @@ class Agent:
 
     def choose_action_train(self, observation, episode):
         actions = self.get_action_given_state(observation)
-        current_noise = self.calculate_noise(episode)
-        if episode % EXPLOITAION != 0:
-            actions += tf.random.normal(shape=[self.n_actions], mean=0.0, stddev=current_noise)
-
+        actions += tf.random.normal(shape=[self.n_actions], mean=0.0, stddev=self.current_noise)
+        actions = tf.clip_by_value(actions, self.min_action, self.max_action)
         return actions
 
-    def calculate_noise(self, episode):
-        noise = max(self.noise_final, self.noise_initial - (self.noise_initial - self.noise_final) * (episode / self.noise_decay_episodes))
-        return noise
+    def decay_noise(self, current_iteration):
+        decay_ratio = current_iteration / self.max_iterations
+        self.current_noise = max(self.noise_final, self.noise_initial * (1 - decay_ratio))
 
     def get_action_given_state(self, observation):
         state = tf.convert_to_tensor([observation], dtype=tf.float32)
         actions = self.actor(state)
         return actions
-
-    def has_negative_value(self, tensor):
-        return bool(tf.reduce_any(tensor < 0).numpy())
 
     def learn(self):
         if self.memory.mem_cntr < self.batch_size:
@@ -124,12 +107,13 @@ class Agent:
         states_ = tf.convert_to_tensor(new_state, dtype=tf.float32)
         rewards = tf.convert_to_tensor(reward, dtype=tf.float32)
         actions = tf.convert_to_tensor(action, dtype=tf.float32)
+        dones = tf.convert_to_tensor(done, dtype=tf.float32)
 
         with tf.GradientTape() as tape:
             target_actions = self.target_actor(states_)
             critic_value_ = tf.squeeze(self.target_critic(states_, target_actions), 1)
             critic_value = tf.squeeze(self.critic(states, actions), 1)
-            target = rewards + self.gamma * critic_value_ * (1 - done)
+            target = rewards + self.gamma * critic_value_ * (1 - dones)
             critic_loss = keras.losses.MSE(target, critic_value)
 
         critic_network_gradient = tape.gradient(critic_loss, self.critic.trainable_variables)
@@ -144,3 +128,12 @@ class Agent:
         self.actor.optimizer.apply_gradients(zip(actor_network_gradient, self.actor.trainable_variables))
 
         self.update_network_parameters()
+
+    def get_signal_from_action(self, action):
+        action_value = action[0]
+        if action_value < -0.5:
+            return Signal.SELL, (action_value + 1) / 0.5  # Scale to [0, 1]
+        elif action_value < 0.5:
+            return Signal.HOLD, 0.0
+        else:
+            return Signal.BUY, (action_value - 0.5) / 0.5  # Scale to [0, 1]

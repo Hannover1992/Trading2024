@@ -62,3 +62,15 @@ class TradingEnv():
 
     def render(self, mode='human'):
         pass
+
+    def normalize_state(self, state):
+        # find the max and min in the data and normalize the state
+        min_state = self.data['Preis'].min()
+        max_state = self.data['Preis'].max()
+        return (state - min_state) / (max_state - min_state)
+
+    def normalize_reward(self, reward):
+        min_reward = -10000
+        max_reward = 10000
+        return (reward - min_reward) / (max_reward - min_reward)
+

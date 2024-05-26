@@ -10,7 +10,7 @@ class TradingSimulation:
         self.shares = 0
         self.data = None
         self.history = []
-        self.state = State()
+        self.state = State(0.0)
         self.actor = RandomActor()
         self.reward_calculator = ValueBasedReward()
 

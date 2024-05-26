@@ -12,11 +12,7 @@ class State:
         self.stack[0] = balance
 
     def get_state(self):
-        # Normalize the state values to [-1, 1]
-        min_val = -10000
-        max_val = +10000 
-        normalized_stack = [(2 * (value - min_val) / (max_val - min_val) - 1) for value in self.stack]
-        return list(normalized_stack)
+        return list(self.stack)
     
     def init_state_with_constant_price(self, price):
         self.stack = deque([price] * self.size, maxlen=self.size)

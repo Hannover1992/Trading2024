@@ -16,8 +16,8 @@ class SimulationPrinter:
         sns.lineplot(data=simulation.data, x='Tage', y='Preis', ax=ax1)
         buy_signals = [(i, h) for i, h in enumerate(simulation.history) if h['Action'] == 'BUY']
         sell_signals = [(i, h) for i, h in enumerate(simulation.history) if h['Action'] == 'SELL']
-        ax1.scatter([i for i, _ in buy_signals], [h['Price'] for _, h in buy_signals], color='green', label='Buy', s=[h['Action Volume'] * 100 for _, h in buy_signals])
-        ax1.scatter([i for i, _ in sell_signals], [h['Price'] for _, h in sell_signals], color='red', label='Sell', s=[h['Action Volume'] * 100 for _, h in sell_signals])
+        ax1.scatter([i for i, _ in buy_signals], [h['Price'] for _, h in buy_signals], color='green', label='Buy', s=[h['Action Volume'] * 20 for _, h in buy_signals])
+        ax1.scatter([i for i, _ in sell_signals], [h['Price'] for _, h in sell_signals], color='red', label='Sell', s=[h['Action Volume'] * 20 for _, h in sell_signals])
         ax1.set_title("Synthetische Preisdaten (Sinus) mit Kauf- und Verkaufsaktionen")
         ax1.set_xlabel("Tage")
         ax1.set_ylabel("Preis")
