@@ -1,7 +1,9 @@
+import os
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from datetime import datetime
 
 class SimulationPrinter:
     @staticmethod
@@ -45,6 +47,16 @@ class SimulationPrinter:
         ax3.set_ylabel("Reward")
 
         plt.tight_layout()
+        
+        # Create the Plots directory if it doesn't exist
+        os.makedirs('Plots', exist_ok=True)
+        
+        # Save the plot with the current date and time as the filename
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"Plots/simulation_plot_{timestamp}.png"
+        plt.savefig(filename)
+        
+        # Optionally show the plot
         plt.show()
 
     @staticmethod
