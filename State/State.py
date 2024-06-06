@@ -2,12 +2,17 @@ from collections import deque
 from Config import WINDOW_SIZE
 
 class State:
-    def __init__(self,  price, size=WINDOW_SIZE,):
+    def __init__(self,  data, size=WINDOW_SIZE,):
+        price = data['Preis'].iloc[0]
+        self.min = data['Preis'].min()
+        self.max = data['Preis'].max()
         self.size = size
-        self.stack = deque([price] * size, maxlen=size)
-        # self.stack[0] = -1.0
+        price_normalized =  self.normalize_state(price)
+        self.stack = deque([price_normalized] * size, maxlen=size)
+
 
     def push(self, price, balance):
+        price = self.normalize_state(price)
         self.stack.append(price)
         # self.stack[0] = balance
 
@@ -26,3 +31,7 @@ class State:
         ratio = (2 * stock_value / total_value) - 1
 
         return ratio
+
+    def normalize_state(self, state):
+        state = (state - self.min) / (self.max - self.min) 
+        return state

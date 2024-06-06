@@ -16,58 +16,47 @@ class TradingEnv():
         self.initial_balance = 10000
         self.cash = self.initial_balance
         self.shares = 0
-        self.data_generator = MockSyntheticSinusData()
-        self.data = self.data_generator.get_data()
-        self.current_step = 0
-        self.state = State(self.data['Preis'].iloc[0])
+        self.data = MockSyntheticSinusData().get_data()
+        self.current_step = 1
+        self.state = State(self.data)
         self.reward_calculator = ValueBasedReward()
         # self.reward_calculator = StateBasedReward()
         self.action_space = spaces.Box(low=-1, high=1, shape=(1,), dtype=np.float32)
         # Define observation space within the range of -10000 and +10000
-        self.observation_space = spaces.Box(low=-10000, high=10000, shape=(WINDOW_SIZE,), dtype=np.float32)
-
-
-        self.previous_amount_of_value_in_shares_and_cash = 10000
-        self.current_amount_of_value_in_shares_and_cash = 10000
+        self.observation_space = spaces.Box(low=self.data['Preis'].min(), high=self.data['Preis'].min(), shape=(WINDOW_SIZE,), dtype=np.float32)
 
     def reset(self, seed=None, options=None):
         self.cash = self.initial_balance
         self.shares = 0
-        self.current_step = 0
-        initial_price = self.data['Preis'].iloc[0]
-        self.state = State(initial_price)
+        self.current_step = 1
+        self.state = State(self.data)
         self.volume = 0.0
         return self.state.get_state(), {}
 
     def step(self, action):
         previous_state = self.state.get_state()
-        previous_state = self.normalize_state(previous_state)
 
         price = self.data['Preis'].iloc[self.current_step]
         
-        volume = float(action[0].numpy())
 
-        if volume >= 0.0:
+        if action >= 0.0:
             if(self.cash >= 0.0):
-                amount_to_invest = self.cash * volume
+                amount_to_invest = self.cash * action
                 shares_to_buy = amount_to_invest / price
                 self.cash -= amount_to_invest
                 self.shares += shares_to_buy
-                self.volume = volume
         else:
             if(self.shares > 0.0):
-                shares_to_sell = self.shares * volume
+                shares_to_sell = self.shares * action
                 amount_received = -shares_to_sell * price
                 self.shares += shares_to_sell
                 self.cash += amount_received
-                self.volume = volume
 
         new_balance_ratio = self.state.calculate_balance_ratio(self.cash, self.shares, price)
         self.state.push(price, new_balance_ratio)
         new_state = self.state.get_state()
-        new_state = self.normalize_state(new_state)
 
-        reward = self.reward_calculator.calculate_reward(previous_state, new_state)
+        reward = self.reward_calculator.calculate_reward(previous_state, new_state, balance_ratio=new_balance_ratio)
 
         # self.current_amount_of_value_in_shares_and_cash = self.cash + self.shares * price
         # reward = self.previous_amount_of_value_in_shares_and_cash - self.current_amount_of_value_in_shares_and_cash

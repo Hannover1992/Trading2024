@@ -1,3 +1,4 @@
+from numpy import float32
 import tensorflow as tf
 import tensorflow.keras as keras
 from tensorflow.keras.optimizers import Adam
@@ -16,11 +17,9 @@ class Agent:
         self.noise_initial = config.noise
         self.noise_final = 0.0
         self.noise_decay_episodes = config.iteration
-
         self.current_noise = self.noise_initial
-        self.max_iterations = config.iteration
 
-        self.memory = ReplayBuffer(config.iteration, input_dims, self.n_actions)
+        self.memory = ReplayBuffer(config.iteration , input_dims, self.n_actions)
         self.batch_size = config.batch_size
         self.max_action = env.action_space.high[0]
         self.min_action = env.action_space.low[0]
@@ -79,17 +78,20 @@ class Agent:
         self.target_critic.load_weights(self.target_critic.checkpoint_file)
 
     def choose_action_evaluate(self, observation):
-        actions = self.get_action_given_state(observation)
-        return actions
+        action = self.get_action_given_state(observation)
+        action  = float(action[0].numpy())
+        return action
 
-    def choose_action_train(self, observation, episode):
-        actions = self.get_action_given_state(observation)
-        actions += tf.random.normal(shape=[self.n_actions], mean=0.0, stddev=self.current_noise)
-        actions = tf.clip_by_value(actions, self.min_action, self.max_action)
-        return actions
+    def choose_action_train(self, observation):
+        action = self.get_action_given_state(observation)
+        action += tf.random.normal(shape=[self.n_actions], mean=0.0, stddev=self.current_noise)
+        action = tf.clip_by_value(action, self.min_action, self.max_action)
+
+        action  = float(action.numpy())
+        return action
 
     def decay_noise(self, current_iteration):
-        decay_ratio = current_iteration / self.max_iterations
+        decay_ratio = current_iteration / self.max_size
         self.current_noise = max(self.noise_final, self.noise_initial * (1 - decay_ratio))
 
     def get_action_given_state(self, observation):
@@ -113,7 +115,8 @@ class Agent:
             target_actions = self.target_actor(states_)
             critic_value_ = tf.squeeze(self.target_critic(states_, target_actions), 1)
             critic_value = tf.squeeze(self.critic(states, actions), 1)
-            target = rewards + self.gamma * critic_value_ * (1 - dones)
+            discounted_future_reward = self.gamma * critic_value_ * (1 - dones)
+            target = rewards + discounted_future_reward
             critic_loss = keras.losses.MSE(target, critic_value)
 
         critic_network_gradient = tape.gradient(critic_loss, self.critic.trainable_variables)

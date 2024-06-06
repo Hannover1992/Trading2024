@@ -18,21 +18,21 @@ def train_ddpg(env, agent, num_episodes, instance_id):
             while not done:
                 if episode % EXPLOITAION == 0 and episode > 0:
                     action = agent.choose_action_evaluate(state)
-                    file.write(f"Evaluate:")
-                    print(f"Evaluate:")
                 else:
-                    action = agent.choose_action_train(state, episode)
+                    action = agent.choose_action_train(state)
                 new_state, reward, done, _ = env.step(action)
-                if episode % EXPLOITAION != 0 and episode > 0:
-                    agent.remember(state, action, reward, new_state, done)
-                    agent.learn()
+                agent.remember(state, action, reward, new_state, done)
+                agent.learn()
                 state = new_state
                 episode_reward += reward
+            cash = env.cash
 
             agent.decay_noise(episode)
 
-            file.write(f"Episode {episode + 1}/{num_episodes}, Reward: {episode_reward}\n")
-            print(f"Episode {episode + 1}/{num_episodes}, Reward: {episode_reward}")
+            if episode % EXPLOITAION == 0 and episode > 0:
+                print(f"Evaluation")
+                print(f"Episode {episode + 1}/{num_episodes}, Reward: {episode_reward} Cash: {cash}")
+                file.write(f"Episode {episode + 1}/{num_episodes}, Reward: {episode_reward} Cash: {cash} \n")
 
 def run_training_process(instance_id, learning_rate):
     # Environment setup
@@ -44,11 +44,12 @@ def run_training_process(instance_id, learning_rate):
 
     # Train the agent
     train_ddpg(env, agent, config.iteration, instance_id)
+
     print(f"Training instance {instance_id} completed")
 
 def main():
 
-    # run_training_process(0, 0.0001)
+    run_training_process(0, 0.01)
 
     num_processes = 22
     processes = []
@@ -58,6 +59,7 @@ def main():
         alpha = ALPHA_MIN + (ALPHA_MAX - ALPHA_MIN) / num_processes * i
         # learning_rate = random.uniform(ALPHA_MIN, ALPHA_MAX)
         learning_rate = alpha
+        print(learning_rate)
         process = multiprocessing.Process(target=run_training_process, args=(i, learning_rate))
         processes.append(process)
         process.start()
