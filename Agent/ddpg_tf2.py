@@ -43,6 +43,7 @@ class Agent:
         self.target_actor.compile(optimizer=Adam(learning_rate=config.alpha))
         self.target_critic.compile(optimizer=Adam(learning_rate=config.beta))
         self.update_network_parameters(tau=1)
+        self.counter = 0
 
     def update_network_parameters(self, tau=None):
         if tau is None:
@@ -61,7 +62,21 @@ class Agent:
         self.target_critic.set_weights(weights)
 
     def remember(self, state, action, reward, new_state, done):
-        self.memory.store_transition(state, action, reward, new_state, done)
+        if(self.counter % 2 == 0):
+            state = [1.0]
+            new_state = [1.0]
+            done = False
+            action = -1.0
+            reward = -1.0
+            self.memory.store_transition(state, action, reward, new_state, done)
+        else:
+            state = [1.0]
+            new_state = [1.0]
+            done = False
+            action = 1.0
+            reward = 1.0
+            self.memory.store_transition(new_state, action, reward, state, done)
+        self.counter += 1
 
     def save_models(self):
         print('... saving models ...')
@@ -103,10 +118,11 @@ class Agent:
         if self.memory.mem_cntr < self.batch_size:
             return
 
-        state, action, reward, new_state, done = self.memory.sample_buffer(self.batch_size)
+        states, action, reward, states_, done = self.memory.sample_buffer(self.batch_size)
+        print_states_actions_rewards(states, action, reward, states_, done)
 
-        states = tf.convert_to_tensor(state, dtype=tf.float32)
-        states_ = tf.convert_to_tensor(new_state, dtype=tf.float32)
+        states = tf.convert_to_tensor(states, dtype=tf.float32)
+        states_ = tf.convert_to_tensor(states_, dtype=tf.float32)
         rewards = tf.convert_to_tensor(reward, dtype=tf.float32)
         actions = tf.convert_to_tensor(action, dtype=tf.float32)
         dones = tf.convert_to_tensor(done, dtype=tf.float32)
@@ -114,18 +130,21 @@ class Agent:
         with tf.GradientTape() as tape:
             target_actions = self.target_actor(states_)
             critic_value_ = tf.squeeze(self.target_critic(states_, target_actions), 1)
+
             critic_value = tf.squeeze(self.critic(states, actions), 1)
-            discounted_future_reward = self.gamma * critic_value_ * (1 - dones)
+            ones = tf.ones_like(dones)
+            discounted_future_reward = self.gamma * critic_value_ * (ones - dones)
             target = rewards + discounted_future_reward
             critic_loss = keras.losses.MSE(target, critic_value)
+            print_inside_of_network(target_actions, critic_value_, critic_value, discounted_future_reward, target, critic_loss)
 
         critic_network_gradient = tape.gradient(critic_loss, self.critic.trainable_variables)
         self.critic.optimizer.apply_gradients(zip(critic_network_gradient, self.critic.trainable_variables))
 
         with tf.GradientTape() as tape:
             new_policy_actions = self.actor(states)
-            actor_loss = -self.critic(states, new_policy_actions)
-            actor_loss = tf.math.reduce_mean(actor_loss)
+            actor_loss = self.critic(states, new_policy_actions)
+            actor_loss = -tf.math.reduce_mean(actor_loss)
 
         actor_network_gradient = tape.gradient(actor_loss, self.actor.trainable_variables)
         self.actor.optimizer.apply_gradients(zip(actor_network_gradient, self.actor.trainable_variables))
@@ -140,3 +159,40 @@ class Agent:
             return Signal.HOLD, 0.0
         else:
             return Signal.BUY, (action_value - 0.5) / 0.5  # Scale to [0, 1]
+
+def print_inside_of_network(target_actions, critic_value_, critic_value, discounted_future_reward, target, critic_loss):
+    # Convert tensors to numpy arrays for printing
+    numpy_target_actions = target_actions.numpy()
+    numpy_critic_value_ = critic_value_.numpy()
+    numpy_critic_value = critic_value.numpy()
+    numpy_discounted_future_reward = discounted_future_reward.numpy()
+    numpy_target = target.numpy()
+    numpy_critic_loss = critic_loss.numpy()
+
+    # Print the values
+    print("Target Actions:", numpy_target_actions)
+    print("Critic Value_ (Target Critic):", numpy_critic_value_)
+    print("Critic Value (Critic):", numpy_critic_value)
+    print("Discounted Future Reward:", numpy_discounted_future_reward)
+    print("Target:", numpy_target)
+    print("Critic Loss:", numpy_critic_loss)
+
+def print_states_actions_rewards(states, action, reward, states_, done):
+    # Ensure the values are printed correctly by converting only if they are tensors
+    if isinstance(states, tf.Tensor):
+        states = states.numpy()
+    if isinstance(action, tf.Tensor):
+        action = action.numpy()
+    if isinstance(reward, tf.Tensor):
+        reward = reward.numpy()
+    if isinstance(states_, tf.Tensor):
+        states_ = states_.numpy()
+    if isinstance(done, tf.Tensor):
+        done = done.numpy()
+
+    # Print the values
+    print("States:", states)
+    print("Action:", action)
+    print("Reward:", reward)
+    print("States_:", states_)
+    print("Done:", done)
