@@ -18,13 +18,19 @@ class MockSyntheticSinusData(IDataSource):
 
     def generate_synthetic_data(self) -> pd.DataFrame:
         amplitude = 40
-        frequenz = 1 / 7
-        days = 8
-        offset = 16
+        frequenz = 1 / 8
+        days = 70
+        start_price = 500
+        end_price = 300
+        noise_level = 10  # Adjust this value to increase or decrease noise
 
         t = np.arange(0, days)
-        price = amplitude * np.sin(2 * np.pi * frequenz * t) + offset
-        # self.show_plot(t,price)
+        linear_trend = np.linspace(start_price, end_price, days)
+        sinusoidal = amplitude * np.sin(2 * np.pi * frequenz * t)
+        noise = np.random.normal(0, noise_level, days)
+
+        price = linear_trend + sinusoidal + noise
+        # self.show_plot(t, price)
         return pd.DataFrame({'Tage': t, 'Preis': price})
 
     def plot_synthetic_data(self, data: pd.DataFrame):

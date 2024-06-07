@@ -14,7 +14,7 @@ class State:
     def push(self, price, balance):
         price = self.normalize_state(price)
         self.stack.append(price)
-        # self.stack[0] = balance
+        self.stack[0] = balance
 
     def get_state(self):
         return list(self.stack)

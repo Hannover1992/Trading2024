@@ -8,6 +8,7 @@ from State.Signal import Signal
 
 class Agent:
     def __init__(self, input_dims, env, config):
+        self.name = config.unique_name
         self.gamma = config.gamma
         self.tau = config.tau
         self.max_size = config.iteration
@@ -43,7 +44,6 @@ class Agent:
         self.target_actor.compile(optimizer=Adam(learning_rate=config.alpha))
         self.target_critic.compile(optimizer=Adam(learning_rate=config.beta))
         self.update_network_parameters(tau=1)
-        self.counter = 0
 
     def update_network_parameters(self, tau=None):
         if tau is None:
@@ -62,21 +62,7 @@ class Agent:
         self.target_critic.set_weights(weights)
 
     def remember(self, state, action, reward, new_state, done):
-        if(self.counter % 2 == 0):
-            state = [1.0]
-            new_state = [1.0]
-            done = False
-            action = -1.0
-            reward = -1.0
-            self.memory.store_transition(state, action, reward, new_state, done)
-        else:
-            state = [1.0]
-            new_state = [1.0]
-            done = False
-            action = 1.0
-            reward = 1.0
-            self.memory.store_transition(new_state, action, reward, state, done)
-        self.counter += 1
+        self.memory.store_transition(state, action, reward, new_state, done)
 
     def save_models(self):
         print('... saving models ...')
@@ -119,7 +105,7 @@ class Agent:
             return
 
         states, action, reward, states_, done = self.memory.sample_buffer(self.batch_size)
-        print_states_actions_rewards(states, action, reward, states_, done)
+        # print_states_actions_rewards(states, action, reward, states_, done)
 
         states = tf.convert_to_tensor(states, dtype=tf.float32)
         states_ = tf.convert_to_tensor(states_, dtype=tf.float32)
@@ -136,7 +122,7 @@ class Agent:
             discounted_future_reward = self.gamma * critic_value_ * (ones - dones)
             target = rewards + discounted_future_reward
             critic_loss = keras.losses.MSE(target, critic_value)
-            print_inside_of_network(target_actions, critic_value_, critic_value, discounted_future_reward, target, critic_loss)
+            # print_inside_of_network(target_actions, critic_value_, critic_value, discounted_future_reward, target, critic_loss)
 
         critic_network_gradient = tape.gradient(critic_loss, self.critic.trainable_variables)
         self.critic.optimizer.apply_gradients(zip(critic_network_gradient, self.critic.trainable_variables))
