@@ -41,13 +41,13 @@ class TradingEnv():
         price = self.data['Preis'].iloc[self.current_step]
         
 
-        if action >= 0.0:
+        if action >= 0.5:
             if(self.cash >= 0.0):
                 amount_to_invest = self.cash * action
                 shares_to_buy = amount_to_invest / price
                 self.cash -= amount_to_invest
                 self.shares += shares_to_buy
-        else:
+        if action <= -0.5:
             if(self.shares > 0.0):
                 shares_to_sell = self.shares * action
                 amount_received = -shares_to_sell * price
