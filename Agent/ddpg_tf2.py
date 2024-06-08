@@ -97,6 +97,7 @@ class Agent:
 
     def get_action_given_state(self, observation):
         state = tf.convert_to_tensor([observation], dtype=tf.float32)
+        state = tf.expand_dims(state, -1)
         actions = self.actor(state)
         return actions[0]
 
@@ -115,9 +116,10 @@ class Agent:
 
         with tf.GradientTape() as tape:
             target_actions = self.target_actor(states_)
-            critic_value_ = tf.squeeze(self.target_critic(states_, target_actions), 1)
+            output_target_critic = self.target_critic((states_, target_actions))
+            critic_value_ = tf.squeeze(output_target_critic, 1)
 
-            critic_value = tf.squeeze(self.critic(states, actions), 1)
+            critic_value = tf.squeeze(self.critic((states, actions)), 1)
             ones = tf.ones_like(dones)
             discounted_future_reward = self.gamma * critic_value_ * (ones - dones)
             target = rewards + discounted_future_reward
@@ -129,7 +131,7 @@ class Agent:
 
         with tf.GradientTape() as tape:
             new_policy_actions = self.actor(states)
-            actor_loss = self.critic(states, new_policy_actions)
+            actor_loss = self.critic((states, new_policy_actions))
             actor_loss = -tf.math.reduce_mean(actor_loss)
 
         actor_network_gradient = tape.gradient(actor_loss, self.actor.trainable_variables)

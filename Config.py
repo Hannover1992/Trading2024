@@ -38,4 +38,4 @@ class Configuration:
         date_str = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S_%f')  # %f gibt Mikrosekunden an
         rand_num = random.randint(1, 1000000)  # Generiert eine Zufallszahl zwischen 1 und 1000000
 
-        self.unique_name = f"{self.unique_name}_{date_str}_{rand_num}_ALPHA_{self.alpha}"
+        self.unique_name = f"{self.unique_name}_{date_str}_{rand_num}_ALPHA_{self.alpha}_NOISE_{self.noise}"

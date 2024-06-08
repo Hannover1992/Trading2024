@@ -1,5 +1,6 @@
 from collections import deque
 from Config import WINDOW_SIZE
+import numpy as np
 
 class State:
     def __init__(self,  data, size=WINDOW_SIZE,):
@@ -18,6 +19,10 @@ class State:
 
     def get_state(self):
         return list(self.stack)
+
+    def get_lstm_sate(self):
+        # Convert deque to numpy array and reshape for LSTM input
+        return np.array(self.stack).reshape(1, self.size, 1)
     
     def init_state_with_constant_price(self, price):
         self.stack = deque([price] * self.size, maxlen=self.size)
@@ -31,6 +36,7 @@ class State:
         ratio = (2 * stock_value / total_value) - 1
 
         return ratio
+
 
     def normalize_state(self, state):
         state = (state - self.min) / (self.max - self.min) 
