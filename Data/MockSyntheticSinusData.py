@@ -19,9 +19,9 @@ class MockSyntheticSinusData(IDataSource):
     def generate_synthetic_data(self) -> pd.DataFrame:
         amplitude = 40
         frequenz = 1 / 8
-        days = 70
+        days = 20
         start_price = 500
-        end_price = 300
+        end_price = 500
         noise_level = 10  # Adjust this value to increase or decrease noise
 
         t = np.arange(0, days)
