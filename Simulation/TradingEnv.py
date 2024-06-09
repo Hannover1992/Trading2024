@@ -58,12 +58,13 @@ class TradingEnv():
         self.state.push(price, new_balance_ratio)
         new_state = self.state.get_state()
 
-        reward = self.reward_calculator.calculate_reward(previous_state, new_state, balance_ratio=new_balance_ratio)
+        self.combined_value_in_cash = self.cash + self.shares * price
+        reward = self.reward_calculator.new_calculate_reward(previous_state, new_state, new_balance_ratio, self.combined_value_in_cash, self.previous_combined_value_in_cash)
+        self.previous_combined_value_in_cash = self.combined_value_in_cash
 
         # self.current_amount_of_value_in_shares_and_cash = self.cash + self.shares * price
         # reward = self.previous_amount_of_value_in_shares_and_cash - self.current_amount_of_value_in_shares_and_cash
 
-        self.combined_value_in_cash = self.cash + self.shares * price
         self.current_step += 1
         done = self.current_step >= len(self.data)
         info = {}
