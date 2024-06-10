@@ -9,7 +9,9 @@ class State:
         self.max = data['Preis'].max()
         self.size = size
         price_normalized =  self.normalize_state(price)
+        #ich mocht an der ersten stelle eine -1 haben
         self.stack = deque([price_normalized] * size, maxlen=size)
+        self.stack[0] = -1.0
 
 
     def push(self, price, balance):

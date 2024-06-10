@@ -1,4 +1,5 @@
 from Reward.IRewardCalculator import IRewardCalculator
+import unittest
 
 class ValueBasedReward(IRewardCalculator):
     def calculate_reward(self, previous_state, current_state,balance_ratio):
@@ -18,14 +19,14 @@ class ValueBasedReward(IRewardCalculator):
         return reward
 
 
-    def new_calculate_reward(self, previous_state, current_state, balance_ratio, combined_value_in_cash, previous_combined_value_in_cash):
+    def new_calculate_reward(self, previous_price, current_price, combined_value_in_cash, previous_combined_value_in_cash):
+
         # Zugriff auf den aktuellen und vorherigen kombinierten Barwert
         current_value = combined_value_in_cash
         previous_value = previous_combined_value_in_cash
 
-        # Letzter Preis aus den Zuständen
-        previous_price = previous_state[-1]
-        current_price = current_state[-1]
+        # real gain 
+        gain =  current_value - previous_value
 
         # Preisänderung berechnen
         price_change = current_price - previous_price
@@ -39,10 +40,22 @@ class ValueBasedReward(IRewardCalculator):
         stocks_value_if_invested_all = previous_value * (current_price / previous_price)
 
         # Die tatsächliche Portfolioänderung berechnen
-        actual_portfolio_change = current_value - previous_value
+        # actual_portfolio_change = current_value - previous_value
 
         # Belohnung basierend auf der Differenz zwischen dem aktuellen Portfoliowert und dem besten hypothetischen Szenario
-        best_hypothetical_scenario = max(cash_if_sold_all, stocks_value_if_invested_all)
-        reward = balance_ratio * (actual_portfolio_change - best_hypothetical_scenario)
+        # maximum_profit = max(cash_if_sold_all, stocks_value_if_invested_all)
 
-        return reward
+        if(price_change >= 0):
+            # es sit gestigen, daswegen das beste wahre alles in stocks zu haben
+            best_scenario_gain = stocks_value_if_invested_all - previous_value
+        else:
+            # es ist gefallen, daswegen das beste wahre alles in cash zu haben
+            best_scenario_gain = cash_if_sold_all - previous_value
+
+        differrence_to_best_scenario = gain - best_scenario_gain 
+
+        
+        # reward = balance_ratio * (actual_portfolio_change - best_hypothetical_scenario)
+
+        return differrence_to_best_scenario
+

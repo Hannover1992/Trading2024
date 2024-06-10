@@ -10,7 +10,7 @@ import multiprocessing
 def train_ddpg(env, agent, num_episodes, instance_id):
     # Open the file in append mode
     with open(f"./Ergebnis/ergebnis_{agent.name}.txt", "a") as file:
-        for episode in range(num_episodes):
+        for episode in range(1, num_episodes):
             state, _ = env.reset()
             done = False
             episode_reward = 0
@@ -69,5 +69,5 @@ def trainMultiDDPG():
 
 
 if __name__ == "__main__":
-    # run_training_process(0, 0.01, 0.7)
-    trainMultiDDPG()
+    run_training_process(0, 0.01, 0.7)
+    # trainMultiDDPG()

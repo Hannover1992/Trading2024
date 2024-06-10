@@ -15,6 +15,8 @@ class TradingEnv():
         super(TradingEnv, self).__init__()
         self.initial_balance = 10000
         self.cash = self.initial_balance
+        self.combined_value_in_cash = self.initial_balance
+        self.previous_combined_value_in_cash = self.initial_balance
         self.shares = 0
         self.data = MockSyntheticSinusData().get_data()
         self.current_step = 1
@@ -25,45 +27,46 @@ class TradingEnv():
         # Define observation space within the range of -10000 and +10000
         self.observation_space = spaces.Box(low=self.data['Preis'].min(), high=self.data['Preis'].min(), shape=(WINDOW_SIZE,), dtype=np.float32)
         self.value_in_cash = self.cash
+        # self.run_tests()
+
+
 
     def reset(self, seed=None, options=None):
         self.cash = self.initial_balance
+        self.combined_value_in_cash = self.initial_balance
+        self.previous_combined_value_in_cash = self.combined_value_in_cash
         self.value_in_cash = self.cash
         self.shares = 0
         self.current_step = 1
         self.state = State(self.data)
-        self.volume = 0.0
         return self.state.get_state(), {}
 
     def step(self, action):
-        previous_state = self.state.get_state()
-
         price = self.data['Preis'].iloc[self.current_step]
-        
+        previous_price = self.data['Preis'].iloc[self.current_step - 1]
+
 
         if action >= 0.0:
             if(self.cash >= 0.0):
                 amount_to_invest = self.cash * action
-                shares_to_buy = amount_to_invest / price
+                shares_to_buy = amount_to_invest / previous_price
                 self.cash -= amount_to_invest
                 self.shares += shares_to_buy
         else:
             if(self.shares > 0.0):
                 shares_to_sell = self.shares * action
-                amount_received = -shares_to_sell * price
+                amount_received = -shares_to_sell * previous_price
                 self.shares += shares_to_sell
                 self.cash += amount_received
 
         new_balance_ratio = self.state.calculate_balance_ratio(self.cash, self.shares, price)
+        self.previous_combined_value_in_cash = self.combined_value_in_cash
+        #T + 1
         self.state.push(price, new_balance_ratio)
         new_state = self.state.get_state()
 
         self.combined_value_in_cash = self.cash + self.shares * price
-        reward = self.reward_calculator.new_calculate_reward(previous_state, new_state, new_balance_ratio, self.combined_value_in_cash, self.previous_combined_value_in_cash)
-        self.previous_combined_value_in_cash = self.combined_value_in_cash
-
-        # self.current_amount_of_value_in_shares_and_cash = self.cash + self.shares * price
-        # reward = self.previous_amount_of_value_in_shares_and_cash - self.current_amount_of_value_in_shares_and_cash
+        reward = self.reward_calculator.new_calculate_reward(previous_price, price,  self.combined_value_in_cash, self.previous_combined_value_in_cash)
 
         self.current_step += 1
         done = self.current_step >= len(self.data)
@@ -83,9 +86,63 @@ class TradingEnv():
         normalize = (state - min_state) / (max_state - min_state)
         # ich wrude geren alle werte ausser dem ersten in dem state normalisieren
         # normalize[0] = state[0]
+
+
         return normalize 
 
     def normalize_reward(self, reward):
         min_reward = -10000
         max_reward = 10000
         return (reward - min_reward) / (max_reward - min_reward)
+
+
+    def run_tests(self):
+        test_no_price_change_new_reward()
+        test_all_stock_gestiegen()
+        test_price_decrease_new_reward()
+        now_lets_test_right_decision_but_all_gain_eat_by_procent()
+
+
+def test_no_price_change_new_reward():
+    reward_calculator = ValueBasedReward()
+    previous_state = [100, 100]
+    current_state = [100, 100]
+    balance_ratio = 0.5
+    combined_value_in_cash = 100
+    previous_combined_value_in_cash = 100
+    reward = reward_calculator.new_calculate_reward(
+            previous_state, current_state, balance_ratio, combined_value_in_cash, previous_combined_value_in_cash)
+    print("No price change - New Reward should be 0:", reward)
+
+def test_all_stock_gestiegen():
+    reward_calculator = ValueBasedReward()
+    previous_state = [100, 100]
+    current_state = [100, 115]
+    balance_ratio = 1.0
+    combined_value_in_cash = 115
+    previous_combined_value_in_cash = 100
+    reward = reward_calculator.new_calculate_reward(
+            previous_state, current_state, balance_ratio, combined_value_in_cash, previous_combined_value_in_cash)
+    print("Price increase - New Reward:", reward)
+
+def test_price_decrease_new_reward():
+    reward_calculator = ValueBasedReward()
+    previous_state = [100, 100]
+    current_state = [100, 90]
+    balance_ratio = 1.0
+    combined_value_in_cash = 90
+    previous_combined_value_in_cash = 100
+    reward = reward_calculator.new_calculate_reward(
+            previous_state, current_state, balance_ratio, combined_value_in_cash, previous_combined_value_in_cash)
+    print("Price decrease - New Reward:", reward)
+
+def now_lets_test_right_decision_but_all_gain_eat_by_procent():
+    reward_calculator = ValueBasedReward()
+    previous_state = [100, 100]
+    current_state = [100, 101]
+    balance_ratio = 1.0
+    combined_value_in_cash = 100
+    previous_combined_value_in_cash = 100
+    reward = reward_calculator.new_calculate_reward(
+            previous_state, current_state, balance_ratio, combined_value_in_cash, previous_combined_value_in_cash)
+    print("High balance ratio - New Reward:", reward)
