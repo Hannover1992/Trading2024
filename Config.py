@@ -10,7 +10,7 @@ FC2 = 50
 BATCH_SIZE = 64
 EXPLOITAION = 3
 GAMMA = 0.99
-WINDOW_SIZE = 10
+WINDOW_SIZE = 40
 
 
 NOISE = 0.7
@@ -19,7 +19,7 @@ NOISE_MIN = 0.1
 NOISE_MAX = 1.0
 
 ALPHA_MIN = 0.00001
-ALPHA_MAX = 0.01
+ALPHA_MAX = 0.001
 
 class Configuration:
     def __init__(self, learning_rate=ALPHA, noise=NOISE):

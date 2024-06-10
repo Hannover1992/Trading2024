@@ -4,6 +4,7 @@ import numpy as np
 from numpy._typing import _16Bit
 from State.Signal import Signal
 from Data.MockSyntheticSinusData import MockSyntheticSinusData
+from Data.MockSyntheticSinusData import BitcoinData
 from State.State import State
 from Reward.ValueBasedReward import ValueBasedReward
 from Reward.StateBasedReward import StateBasedReward 
@@ -19,6 +20,7 @@ class TradingEnv():
         self.previous_combined_value_in_cash = self.initial_balance
         self.shares = 0
         self.data = MockSyntheticSinusData().get_data()
+        # self.data = BitcoinData('./Data/bitcoin.csv').get_data()
         self.current_step = 1
         self.state = State(self.data)
         self.reward_calculator = ValueBasedReward()
@@ -51,13 +53,13 @@ class TradingEnv():
                 amount_to_invest = self.cash * action
                 shares_to_buy = amount_to_invest / previous_price
                 self.cash -= amount_to_invest
-                self.shares += shares_to_buy
+                self.shares += shares_to_buy * 0.995
         else:
             if(self.shares > 0.0):
                 shares_to_sell = self.shares * action
                 amount_received = -shares_to_sell * previous_price
                 self.shares += shares_to_sell
-                self.cash += amount_received
+                self.cash += amount_received * 0.995
 
         new_balance_ratio = self.state.calculate_balance_ratio(self.cash, self.shares, price)
         self.previous_combined_value_in_cash = self.combined_value_in_cash

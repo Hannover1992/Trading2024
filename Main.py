@@ -48,7 +48,7 @@ def run_training_process(instance_id, learning_rate, noise):
     print(f"Training instance {instance_id} completed")
 
 def trainMultiDDPG():
-    num_processes = 24
+    num_processes = 20
     processes = []
 
     for i in range(num_processes):
@@ -69,5 +69,5 @@ def trainMultiDDPG():
 
 
 if __name__ == "__main__":
-    run_training_process(0, 0.01, 0.7)
-    # trainMultiDDPG()
+    # run_training_process(0, 0.01, 0.7)
+    trainMultiDDPG()

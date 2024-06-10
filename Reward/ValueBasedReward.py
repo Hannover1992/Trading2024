@@ -56,6 +56,7 @@ class ValueBasedReward(IRewardCalculator):
 
         
         # reward = balance_ratio * (actual_portfolio_change - best_hypothetical_scenario)
-
-        return differrence_to_best_scenario
+        
+        
+        return differrence_to_best_scenario/200
 
