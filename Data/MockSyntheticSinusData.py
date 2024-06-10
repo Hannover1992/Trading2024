@@ -30,7 +30,7 @@ class MockSyntheticSinusData(IDataSource):
         noise = np.random.normal(0, noise_level, days)
 
         price = linear_trend + sinusoidal + noise
-        # self.show_plot(t, price)
+        self.show_plot(t, price)
         return pd.DataFrame({'Tage': t, 'Preis': price})
 
     def plot_synthetic_data(self, data: pd.DataFrame):
