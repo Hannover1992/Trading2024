@@ -21,8 +21,9 @@ def train_ddpg(env, agent, num_episodes, instance_id):
                 else:
                     action = agent.choose_action_train(state)
                 new_state, reward, done, _ = env.step(action)
-                agent.remember(state, action, reward, new_state, done)
-                agent.learn()
+                if episode % EXPLOITAION == 0:
+                    agent.remember(state, action, reward, new_state, done)
+                    agent.learn()
                 state = new_state
                 episode_reward += reward
                 #not a number
@@ -49,7 +50,7 @@ def run_training_process(instance_id, learning_rate, noise):
     print(f"Training instance {instance_id} completed")
 
 def trainMultiDDPG():
-    num_processes = 24
+    num_processes = 22
     processes = []
 
     for i in range(num_processes):

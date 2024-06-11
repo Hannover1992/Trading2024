@@ -42,7 +42,7 @@ class MockSyntheticSinusData(IDataSource):
         return self.generate_synthetic_data()
 
     def generate_synthetic_data(self) -> pd.DataFrame:
-        days = 25
+        days = 16
         start_price = 500
         end_price = 500
         noise_level = 50  # Significantly increased noise
