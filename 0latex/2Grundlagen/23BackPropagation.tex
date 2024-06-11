@@ -1,0 +1,89 @@
+
+\subsection{Einführung in die Backpropagation}
+
+Backpropagation, oder auch "Rückpropagation des Fehlers", ist ein Optimierungsverfahren, das haupt-sächlich in der Ausbildung von künstlichen neuronalen Netzwerken verwendet wird. Das grundlegende Ziel der Backpropagation ist es, den Fehler, der während des Trainingsprozesses an der Ausgabeschicht berechnet wird, rückwärts durch das Netzwerk zu propagieren und durch Änderung der Gewichte zu minimieren. Dies ermöglicht die effiziente Anpassung der Gewichtungen und Bias-Werte des Netzwerks, um die Leistung zu verbessern.
+
+\paragraph{Das Grundprinzip}
+
+In einem neuronalen Netzwerk wird die Ausgabe durch eine Kette von Transformationen berechnet, die jeweils durch eine Schicht von Neuronen repräsentiert werden. Jedes Neuron in einer Schicht nimmt die Ausgaben der vorherigen Schicht auf, führt eine gewichtete Summe durch und wendet eine Aktivierungsfunktion an. Die endgültige Ausgabe wird dann mit dem tatsächlichen Zielwert verglichen, um einen Fehlerwert zu ermitteln. Dieser Fehler wird verwendet, um die Gewichtungen und Bias-Werte im Netzwerk so anzupassen, dass der Fehler minimiert wird.
+
+\paragraph{Die Bedeutung der Kostenfunktion}
+Die Kostenfunktion \( C_0 \), oft als Verlustfunktion bezeichnet, quantifiziert den Fehler zwischen den vorhergesagten Ausgaben und den tatsächlichen Zielwerten. Die Minimierung dieser Kostenfunktion ist das Hauptziel während des Trainingsprozesses, und Backpropagation ist das Schlüsselwerkzeug, das dabei hilft.
+
+\paragraph{Rückpropagation in Neuronalen Netzwerken}
+Zur Minimierung der Kostenfunktion \( C_0 \), die wie folgt definiert ist:
+
+\begin{equation}
+C_0 = \sum_{j=0}^{n_{L-1}} (a_j^{[L]} - y_j)^2
+\label{eq:cost_function}
+\end{equation}
+
+wird die Technik der Rückpropagation verwendet. Das grundlegende Konzept besteht darin, den Fehler von der Ausgabeschicht rückwärts durch das Netzwerk zu propagieren. In Gleichung \ref{eq:cost_function} haben wir beispielhaft einen quadratischen Fehler als Kostenfunktion verwendet.
+
+\cite{SuttonBarto2018}
+
+\paragraph{Der Gradient des Fehlers in der Ausgabeschicht}
+
+Die partielle Ableitung der Kostenfunktion \( C_0 \) in Bezug auf den Ausgabewert \( a_j^{[L]} \) wird durch folgende Formel definiert:
+
+\begin{equation}
+\label{eq:partial_derivative}
+\frac{\partial C_0}{\partial a_j^{[L]}} = 2 \left( a_j^{[L]} - y_j \right)
+\end{equation}
+
+Dieser Ausdruck stellt den Gradienten des Fehlers in der Ausgabeschicht dar. Er gibt an, wie empfindlich die Kostenfunktion \( C_0 \) auf Änderungen in \( a_j^{[L]} \) reagiert. Dieser Wert wird zur Anpassung der Gewichtungen des Netzwerks während des Trainingsprozesses verwendet.
+
+\paragraph{Fehler Rückpropagieren}
+
+Die Ableitungen der Aktivierungsfunktion \( a_j^{[L]} \) und der linearen Kombination \( z_j^{[L]} \) sind:
+
+\[
+\frac{\partial a_j^{[L]}}{\partial z_j^{[L]}} = \sigma' \left( z_j^{[L]} \right)
+\]
+\[
+\frac{\partial z_j^{[L]}}{\partial w_{jk}^{[L]}} = a_k^{[L-1]}
+\]
+
+\paragraph{Kettenregel Anwenden}
+
+Nun kombinieren wir alle diese Teile mit der Kettenregel:
+
+\[
+\frac{\partial C_0}{\partial w_{jk}^{[L]}} = \frac{\partial C_0}{\partial a_j^{[L]}} \cdot \frac{\partial a_j^{[L]}}{\partial z_j^{[L]}} \cdot \frac{\partial z_j^{[L]}}{\partial w_{jk}^{[L]}}\]
+\label{eq:Ketten Regel}
+
+Durch Anwendung der Kettenregel erhalten wir:
+
+\[
+\frac{\partial C_0}{\partial w_{jk}^{[L]}} = 2 \left( a_j^{[L]} - y_j \right) \cdot \sigma' \left( z_j^{[L]} \right) \cdot a_k^{[L-1]}
+\]
+
+\paragraph{Gradienten der Kostenfunktion}
+
+Der Gradient der Kostenfunktion \( C_0 \) in Bezug auf alle Gewichtungen wird durch folgende Matrix dargestellt:
+
+\[
+\nabla W^{[L]} C_0 = \left( 2 \left( a^{[L]} - y \right) \odot \sigma' \left( Z^{[L]} \right) \right) A^{[L-1]T}
+\label{eq: gradient}
+\]
+
+Die Gradientenmatrix für die Gewichtungen in Bezug auf die Kostenfunktion \( C_0 \) kann in Matrixform dargestellt werden:
+
+\[
+\nabla_{W^{[L]}} C_0 = 
+\begin{pmatrix}
+2(a_1^{[L]} - y_1) \cdot \sigma' (z_1^{[L]}) \cdot a_1^{[L-1]} & \cdots & 2(a_1^{[L]} - y_1) \cdot \sigma' (z_1^{[L]}) \cdot a_m^{[L-1]} \\
+2(a_2^{[L]} - y_2) \cdot \sigma' (z_2^{[L]}) \cdot a_1^{[L-1]} & \cdots & 2(a_2^{[L]} - y_2) \cdot \sigma' (z_2^{[L]}) \cdot a_m^{[L-1]} \\
+\vdots & \ddots & \vdots \\
+2(a_n^{[L]} - y_n) \cdot \sigma' (z_n^{[L]}) \cdot a_1^{[L-1]} & \cdots & 2(a_n^{[L]} - y_n) \cdot \sigma' (z_n^{[L]}) \cdot a_m^{[L-1]}
+
+\label{eq: gradient matrix}
+\end{pmatrix}
+\]
+
+Diese Matrix gibt die Änderungsrate der Kostenfunktion \( C_0 \) in Bezug auf das entsprechende Gewicht an.
+\cite{SuttonBarto2018}
+
+\paragraph{Schlussfolgerungen}
+In diesem Kapitel wurde die Backpropagation-Technik ausführlich behandelt, ein Verfahren zur Optimierung von neuronalen Netzwerken. Mittels mathematischer Formeln wurde illustriert, wie der Fehler in der Ausgabeschicht des Netzwerks rückwärts propagiert wird, um eine Kostenfunktion \( C_0 \) zu minimieren. Besonders relevant ist die Anwendung der Kettenregel, die es erlaubt, die Änderungsrate der Kostenfunktion \( C_0 \) in Bezug auf die Gewichtungen zu berechnen. Diese Informationen sind entscheidend für die Anpassung der Gewichtungen und somit für die Verbesserung der Netzwerkleistung. Es sei darauf hingewiesen, dass nicht die einzigen Methoden sind, in der Praxis können je nach Anforderungen und Anwendungsfall auch andere Fehlerbestimmungsmethoden, Aktivierungsfunktionen und Netzwerkarchitekturen verwendet werden.
+

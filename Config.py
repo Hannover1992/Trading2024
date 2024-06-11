@@ -1,25 +1,25 @@
 import datetime
 import random
 
-ITERATION = 2000
+ITERATION = 200
 ALPHA = 0.01
 BETA = ALPHA * 2
 TAU = ALPHA * 5
-FC1 = 50
-FC2 = 50
+FC1 = 10
+FC2 = 10
 BATCH_SIZE = 64
-EXPLOITAION = 3
+EXPLOITAION = 2
 GAMMA = 0.99
-WINDOW_SIZE = 40
+WINDOW_SIZE = 5
 
 
 NOISE = 0.7
 
-NOISE_MIN = 0.1
+NOISE_MIN = 0.3
 NOISE_MAX = 1.0
 
-ALPHA_MIN = 0.00001
-ALPHA_MAX = 0.001
+ALPHA_MIN = 0.0001
+ALPHA_MAX = 0.01
 
 class Configuration:
     def __init__(self, learning_rate=ALPHA, noise=NOISE):

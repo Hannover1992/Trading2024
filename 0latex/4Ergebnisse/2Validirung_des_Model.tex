@@ -1,0 +1,34 @@
+
+\section{Vergleich und Validierung der Modellleistung}
+
+
+Im Folgenden wird der umfassende Lernprozess des DDPG-Modells dargestellt, wobei ein besonderes Augenmerk auf die ersten 10.000 Iterationen gelegt wird, wie in Abbildung \ref{fig:ddpg-learning-phases} zu sehen ist. Dieser Abschnitt des Trainings ist besonders aussagekräftig, da abgesehen von den divergierenden Modellen, alle anderen Modelle nahe am Optimum zu konvergieren scheinen.
+
+
+\paragraph{Phase 1: Verifikation und Robustheit des DDPG-Modells}
+Die erste Phase unserer Untersuchung dient der Verifikation der Leistungsfähigkeit und Robustheit des Deep Deterministic Policy Gradient (DDPG)-Modells im Kontext der Optimierung von DC-DC-Wandlern. Hierbei konzentrieren wir uns auf zwei Varianten des DDPG-Modells: ein einfacheres, schnell zu trainierendes Modell und ein fortgeschrittenes Modell mit komplexerer Architektur und längeren Trainingszeiten. Unser Hauptziel ist es, zu demonstrieren, dass das DDPG-Modell in der Lage ist, nahezu optimale Lösungen zu erzielen.
+
+Um die Gültigkeit und Zuverlässigkeit unserer Modelle zu bestätigen, vergleichen wir die Ergebnisse des DDPG-Modells mit denen eines anderen bekannten Optimierungsverfahrens, das für seine hohe Leistung bekannt ist. Diese methodische Triangulation – die Approximation der Lösungen durch zwei grundlegend verschiedene Ansätze – soll nicht nur die Ähnlichkeit der Ergebnisse aufzeigen, sondern auch die Stärke und Anpassungsfähigkeit des DDPG-Modells in diesem speziellen Anwendungsbereich unterstreichen. Wir analysieren, wie sich eine einfache quadratische Belohnungsfunktion, die die Abweichung von der Zielspannung bestraft, auf die Performance dieser Modelle auswirkt und wie dies im Vergleich zu dem alternativen Optimierungsverfahren steht.
+
+\paragraph{Phase 2: Anpassung der Bestrafungsfunktion und Erweiterung des Suchraums}
+In der zweiten Phase unserer Untersuchung wurde die Belohnungsfunktion modifiziert, um eine ausgewogenere Reaktion auf Spannungsabweichungen zu erzielen. Wir haben zwei Ansätze kombiniert: Für Spannungsabweichungen über einem Schwellenwert von 1 wird eine quadratische Bestrafung angewendet, um auf größere Spannungsschwankungen stärker zu reagieren und so die Stabilität des Systems zu verbessern. Für Abweichungen unter diesem Schwellenwert wird eine Bestrafung basierend auf dem absoluten Wert vorgenommen, was das System sensibler für kleinere Spannungsabweichungen macht.
+
+Zusätzlich wurde der Suchraum für die Optimierung erheblich erweitert, um eine breitere Palette von Konfigurationsmöglichkeiten zu erforschen. Der neue Suchraum erstreckt sich nun über deutlich größere Bereiche:
+- Kp: 0 bis 1000
+- Ki: 0 bis 100
+- Kd: 0 bis 10
+
+Diese Erweiterung des Suchraums soll aufzeigen, wie sich die Modelle, insbesondere die Bayesianische Optimierung, die bei großen Suchräumen bekannterweise Herausforderungen hat, im Vergleich zum DDPG-Modell verhalten. Es wird interessant zu beobachten sein, wie diese Änderungen die Leistung und Effektivität der Modelle beeinflussen, insbesondere in Bezug auf ihre Fähigkeit, mit größeren und komplexeren Konfigurationsräumen umzugehen.
+
+\paragraph{Phase 3: Miniaturisierung}
+
+In der dritten Phase unserer Untersuchung widmen wir uns der Miniaturisierung der Netzwerkmodelle. Unser Ziel ist es, die Fähigkeiten eines reduzierten Modells zu evaluieren und zu verstehen, wie es trotz geringerer Komplexität effektiv funktionieren kann. Diese Untersuchungen sind entscheidend, um das Potenzial der kompakten Modelle für den Einsatz in realen Anwendungsszenarien zu erkennen.
+
+% \textbf{Erwartete Auswirkungen:}
+% Durch diese Anpassung erwarten wir, dass die Modelle eine feinere Abstimmung der Spannungsregelung erlernen und gleichzeitig eine robustere Reaktion auf größere Spannungsschwankungen zeigen. Dieser Ansatz soll die Balance zwischen Sensitivität für geringfügige Abweichungen und effektiver Kontrolle über größere Störungen verbessern.
+
+
+\input{4Ergebnisse/Phasen/1Phase/1Phase}
+\input{4Ergebnisse/Phasen/2Phase/2Phase}
+\input{4Ergebnisse/Phasen/3Phase/3Phase}
+

@@ -127,6 +127,8 @@ class Agent:
             # print_inside_of_network(target_actions, critic_value_, critic_value, discounted_future_reward, target, critic_loss)
 
         critic_network_gradient = tape.gradient(critic_loss, self.critic.trainable_variables)
+        # print("Critic Network Gradient")
+        # print(critic_network_gradient)
         self.critic.optimizer.apply_gradients(zip(critic_network_gradient, self.critic.trainable_variables))
 
         with tf.GradientTape() as tape:
@@ -135,6 +137,8 @@ class Agent:
             actor_loss = -tf.math.reduce_mean(actor_loss)
 
         actor_network_gradient = tape.gradient(actor_loss, self.actor.trainable_variables)
+        # print("Actor Network Gradient")
+        # print(actor_network_gradient)
         self.actor.optimizer.apply_gradients(zip(actor_network_gradient, self.actor.trainable_variables))
 
         self.update_network_parameters()

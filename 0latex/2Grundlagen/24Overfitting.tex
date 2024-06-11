@@ -1,0 +1,57 @@
+\subsection{Vermeidung von Overfitting in Neuronalen Netzen}
+\label{sec: overfitting}
+
+Overfitting ist ein kritisches Problem in der Anwendung neuronaler Netze, da es die Generalisierbarkeit des Modells auf neue Daten beeinträchtigt. 
+Es tritt auf, wenn ein neuronales Netzwerk die Trainingsdaten "zu gut" lernt, einschließlich des Rauschens und der Ausreißer, und dadurch schlecht auf neue, unbekannte Daten generalisiert. 
+Ein klares Anzeichen für Overfitting ist, wenn die Leistung auf dem Trainingsdatensatz steigt, während die Leistung auf dem Validierungsdatensatz stagniert oder abnimmt.
+\cite{klein_abbeel_cs188}
+
+\textbf{Strategien zur Vermeidung von Overfitting:}
+
+\begin{enumerate}
+    \item \textbf{Regularisierung}: Es gibt verschiedene Formen der Regularisierung wie L1 und L2, die durch die Einführung eines Regularisierungsterms in die Kostenfunktion die Modellkomplexität einschränken.
+    \item \textbf{Dropout}: Einige Neuronen werden während des Trainings zufällig "ausgeschaltet", um das Modell daran zu hindern, sich zu stark auf bestimmte Merkmale zu verlassen.
+    \item \textbf{Daten Augmentation}: Durch kleine Veränderungen der Eingabedaten kann der Trainingsdatensatz erweitert und die Generalisierungsfähigkeit des Modells verbessert werden.
+    \item \textbf{Frühzeitiges Stoppen}: Das Training wird gestoppt, sobald die Leistung auf dem Validierungsdatensatz sich nicht mehr verbessert.
+    \item \textbf{Stochastischer Gradientenabstieg}: Dieser Algorithmus kann als eine Form der Regularisierung betrachtet werden.
+    \item \textbf{Vereinfachung der Architektur}: Reduzierung der Anzahl der Neuronen oder Schichten im Netzwerk.
+    \item \textbf{Ensemble-Methoden}: Mehrere Modelle werden trainiert und ihre Vorhersagen kombiniert, um eine robustere Vorhersage zu erhalten. Dies kann als eine Form der Regularisierung betrachtet werden.
+\end{enumerate}
+
+
+
+\subsubsection{Regularisierung}
+
+Die Kostenfunktion \( J(\theta) \) wird durch die Hinzufügung eines Regularisierungsterms erweitert:
+\[
+J(\theta) = \text{Ursprüngliche Kosten} + \frac{\lambda}{2m} \sum_{i=1}^{n} \theta_{i}^{2}
+\]
+Hierbei ist \( \lambda \) der Regularisierungsparameter und \( \theta \) sind die Gewichtungen des Modells.
+\cite{klein_abbeel_cs188}
+
+
+\subsubsection{Dropout}
+
+Während des Trainings wird eine binäre Maske \( M \) mit einer Wahrscheinlichkeit \( p \) generiert und die Ausgabe eines jeden Layers wird mit dieser Maske multipliziert.
+
+\subsubsection{Daten Augmentation}
+
+Der Trainingsdatensatz \( D \) wird durch Transformationen \( T \) erweitert, um die Generalisierungsfähigkeit des Modells zu verbessern: 
+\[
+D' = D \cup T(D)
+\]
+
+\subsubsection{Frühzeitiges Stoppen}
+
+Das Training wird gestoppt, sobald die Validierungsfehlerfunktion \( J_{\text{valid}}(\theta) \) anfängt zu steigen oder nicht mehr abnimmt.
+
+\subsubsection{Vereinfachung der Architektur}
+
+Die Anzahl der Schichten \( L \) oder Neuronen \( N \) wird reduziert, d.h., \( L' < L \) oder \( N' < N \).
+
+\subsubsection{Ensemble-Methoden}
+
+Mehrere Modelle \( f_{1}, f_{2}, \ldots, f_{n} \) werden trainiert und ihre Vorhersagen werden gemittelt oder anderweitig kombiniert:
+\[
+f_{\text{Ensemble}}(x) = \frac{1}{n} \sum_{i=1}^{n} f_{i}(x)
+\]

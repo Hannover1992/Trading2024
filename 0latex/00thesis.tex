@@ -1,0 +1,61 @@
+
+
+\documentclass[a4paper,10pt]{report} % Schriftgröße auf 10pt geändert
+
+\usepackage{titlesec}
+
+% FAlls ich lust hatte die seciton noch tiefer zu gehen
+% \setcounter{secnumdepth}{4}
+%
+% \titleformat{\paragraph}
+% {\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+% \titlespacing*{\paragraph}
+% {0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\usepackage{graphicx}
+\usepackage[backend=biber]{biblatex}
+\usepackage{amsmath} 
+\usepackage{todonotes}
+\addbibresource{citations.bib}
+
+\usepackage{tikz}
+\usetikzlibrary{automata, positioning, arrows}
+
+% Pakete für die Verbesserungsvorschläge
+\usepackage[margin=1in]{geometry} % Ränder reduziert
+\usepackage{setspace} % Zeilenabstand steuern
+\usepackage{enumitem} % Kompakte Listen
+% \usepackage{multicol} % Mehrspaltiger Text
+
+\usepackage{algorithmic}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb} % oder \usepackage{amsfonts}
+\usepackage{subcaption}
+
+% \setstretch{1.15} % Zeilenabstand auf 1,15 eingestellt
+% \setlist{nosep} % Kompakte Listen
+
+\title{} % Leer lassen, da der Titel manuell gestaltet wird
+\author{} % Leer lassen, da der Autor manuell gestaltet wird
+
+\begin{document}
+
+\input{0titel} % Manuelle Titelseite
+\input{01abstract} % Abstract zu Beginn der Arbeit
+\tableofcontents % Inhaltsverzeichnis
+
+%\tableofcontents % Inhaltsverzeichnis
+
+\input{1Einleitung/1einleitung}
+%\input{1Einleitung/11einleitungBig}
+\input{2Grundlagen/1Grundlagen}
+\input{3Experiment/1Aufbau}
+\input{4Ergebnisse/0AufbauErgebnisse}
+
+\input{./3_FAzit}
+\input{./9Weiter_Studien}
+\input{99Eid}
+\printbibliography % Jetzt wird die Bibliographie ein Teil des Anhangs
+
+\end{document}

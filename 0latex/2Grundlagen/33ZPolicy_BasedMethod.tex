@@ -1,0 +1,10 @@
+\subsection{Übergang von DQN zu DDPG}
+
+Die Deep Q-Network (DQN)-Methode funktioniert gut bei diskreten Aktionen, da sie für jeden Zustand \( s \) eine endliche Menge an Q-Werten für mögliche Aktionen \( a \) berechnet. Abbildung \ref{fig:dqn} veranschaulicht diese Vorgehensweise. In kontinuierlichen Aktionsräumen jedoch, wo die Aktionen nicht mehr zählbar sind, kann DQN nicht effizient eingesetzt werden, da das Auffinden des maximalen Q-Werts über eine unendliche Anzahl von Aktionen ein nicht-triviales Optimierungsproblem darstellt \cite{aggarwal2018neural}.
+
+Der Deep Deterministic Policy Gradient (DDPG) Ansatz erweitert die Idee des DQN, indem er eine deterministische Policy \( \mu \) trainiert, die direkt die optimale Aktion für einen gegebenen Zustand \( s \) liefert, ohne ein Maximum über alle Aktionen zu suchen \cite{Wu2018AggregatedMultiDDPG}. Dieses Verfahren ist besonders in kontinuierlichen Aktionsräumen effektiv, da es die Notwendigkeit umgeht, unendlich viele Aktionen auszuwerten.
+
+DDPG nutzt das Actor-Critic-Modell, bei dem das Actor-Netzwerk als Policy-Funktion dient und das Critic-Netzwerk den Wert einer Aktion einschätzt. Während das DQN für jede Aktion separat Q-Werte berechnet, kombiniert DDPG die Vorteile des Policy-Based Reinforcement Learnings mit den Techniken von Value-Based Methoden, indem es die Policy direkt durch Rückpropagierung und gemäß des Gradienten der Zielfunktion anpasst \cite{morales2020grokking}. Das Ergebnis ist eine Policy, die Aktionen für kontinuierliche Entscheidungsräume effizient auswählen kann, ohne bei jeder Entscheidung ein Optimierungsproblem lösen zu müssen \cite{Wu2018AggregatedMultiDDPG}.
+
+DDPG adressiert auch das Problem der Exploration durch die Einführung von Rauschen in das Actor-Netzwerk, um eine Vielfalt von Aktionen zu erzeugen und so die Umgebung umfassend zu erkunden \cite{morales2020grokking}. Dies unterscheidet sich von DQN, wo eine Epsilon-Greedy-Strategie zur Exploration verwendet wird, die über eine diskrete Menge an Aktionen variiert.
+

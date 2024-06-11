@@ -1,0 +1,67 @@
+\section{Detaillierte Darstellung und Vergleich der Ergebnisse}
+\label{sec:Detailed_Results_Comparison}
+
+In diesem Abschnitt werden die Ergebnisse der drei verschiedenen Ansätze zur Optimierung des DC-DC-Wandlers vorgestellt: die Bayesianische Optimierung sowie die kleinen und großen DDPG-Netzwerkmodelle. Die Belohnungen, die mit jeder Konfiguration erzielt wurden, bieten einen Einblick in die Effektivität jedes Ansatzes.
+
+
+
+
+\begin{table}[htbp]
+\centering
+\caption{Vergleich der erzielten Belohnungen der Optimierungsansätze}
+\label{tab:rewards_comparison}
+\begin{tabular}{lcc}
+\hline
+\textbf{Ansatz} & \textbf{Belohnung} & \textbf{Konfiguration} \\
+\hline
+Bayesian Optimization & -3.63 & - \\
+Kleines DDPG-Modell & -3.9098342748323116 & \begin{tabular}[c]{@{}c@{}}Induktivität: 5.0e-3, \\ Kapazität: 10.0e-6, \\ Kp: 2.43055224, \\ Ki: 0.67658715, \\ Kd: 0.00937204\end{tabular} \\
+Großes DDPG-Modell & -3.42173412748323116 & \begin{tabular}[c]{@{}c@{}}Induktivität: 5.0e-3, \\ Kapazität: 10.0e-6, \\ Kp: 3.42173412, \\ Ki: 0.67770964, \\ Kd: 0.01268652\end{tabular} \\
+\hline
+\end{tabular}
+\end{table}
+
+Jeder Ansatz wurde unter Verwendung einer spezifischen Kombination von Induktivität und Kapazität evaluiert, wobei die entsprechenden Belohnungen als Maßstab für die Leistungsfähigkeit dienten.
+
+% Wiederholen Sie die obige Struktur für die anderen beiden Ansätze.
+
+Die erzielten Belohnungen sind in den entsprechenden Grafiken visualisiert, welche die Leistung jedes Modells über die Zeit darstellen. Diese Visualisierungen sind entscheidend, um die Fortschritte und das Verhalten des DC-DC-Wandlers in Echtzeit zu verstehen.
+
+
+\clearpage % Dies sorgt dafür, dass die folgenden Inhalte auf einer neuen Seite beginnen.
+
+Die Abbildungen \ref{fig:bayesian_optimization_results}, \ref{fig:small_ddpg_results} und \ref{fig:large_ddpg_results} zeigen die jeweiligen Belohnungen, die durch die unterschiedlichen Optimierungsverfahren erzielt wurden. Die Belohnungen reflektieren die Anpassungsfähigkeit und Effizienz der jeweiligen Regelungsmethoden unter verschiedenen Bedingungen.
+
+\subsection{Analyse der Ergebnisse}
+Die direkte Gegenüberstellung der Belohnungen aus den verschiedenen Optimierungsansätzen zeigt deutlich, dass das größere DDPG-Modell eine überlegene Performance aufweist, insbesondere in der Anpassungsfähigkeit an komplexe Regelungsaufgaben. Die Bayesianische Optimierung liefert eine gute Grundlage für das Feintuning, während das kleinere DDPG-Modell trotz geringerer Komplexität wettbewerbsfähige Ergebnisse zeigt.
+
+Diese vergleichende Analyse ermöglicht es uns, die Vor- und Nachteile jedes Ansatzes zu verstehen und bietet wertvolle Einblicke für die zukünftige Entwicklung von Regelungsalgorithmen für elektronische Wandler.
+
+
+
+
+
+
+
+
+
+
+% 12 Ergebnisee Bestrafe Spikes
+
+Baysie Optimization
+Maximum Value: -3.821364055276552
+Corresponding Parameters:
+Kd: 0.013931402806247174
+Ki: 0.8521257369717544
+Kp: 3.925047356012834
+
+
+Netzwerk Small:
+Maximum reward: -3.910180285904306
+Corresponding action: 5.32709267 0.99218339 0.01846072
+File containing maximum reward: unique_name_Artemis_2023-1
+
+Ergebnise das big network 
+Maximum reward: -3.7855736817205585
+Corresponding action: 5.03869285 0.80699286 0.01712556
+

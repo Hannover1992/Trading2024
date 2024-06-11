@@ -25,6 +25,7 @@ def train_ddpg(env, agent, num_episodes, instance_id):
                 agent.learn()
                 state = new_state
                 episode_reward += reward
+                #not a number
             cash = env.combined_value_in_cash
 
             agent.decay_noise(episode)
@@ -48,7 +49,7 @@ def run_training_process(instance_id, learning_rate, noise):
     print(f"Training instance {instance_id} completed")
 
 def trainMultiDDPG():
-    num_processes = 20
+    num_processes = 24
     processes = []
 
     for i in range(num_processes):

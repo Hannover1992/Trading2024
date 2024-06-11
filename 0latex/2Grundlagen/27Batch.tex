@@ -1,0 +1,24 @@
+\subsection{Bedeutung der Batch-Größe}
+\label{sec: Batch}
+
+Die Batch-Größe ist ein weiterer wichtiger Hyperparameter in der Ausbildung von neuronalen Netzwerken. Sie beeinflusst nicht nur die Rechenzeit, sondern auch die Modellgenauigkeit. Die Wahl der optimalen Batch-Größe ist ein Kompromiss zwischen Recheneffizienz und Modellqualität. Im Folgenden werden einige relevante Aspekte diskutiert.
+
+\subsubsection{Berechnungseffizienz}
+\begin{itemize}
+    \item \textbf{Große Batches:} Eine große Batch-Größe ermöglicht es, viele Datenpunkte gleichzeitig durch das Netzwerk zu leiten, wodurch die Recheneffizienz erhöht wird. Minibatch-Stochastic Gradient Descent (SGD) ist in der Regel 10-mal schneller als Full-Batch-SGD, insbesondere bei Verwendung von parallelen Vektoroperationen auf modernen CPU- oder GPU-Architekturen \cite{russell2021ai}.
+    
+    \item \textbf{Kleine Batches:} Bei einer kleinen Batch-Größe wird weniger Speicher benötigt, und das Modell kann schneller auf den Daten trainieren, auch wenn dies zu einer höheren Varianz im Gradienten führen kann \cite{morales2020grokking}.
+\end{itemize}
+
+\subsubsection{Genauigkeit und Overfitting}
+\begin{itemize}
+    \item \textbf{Große Batches:} Größere Batches bieten in der Regel genauere Schätzungen des Gradienten, können jedoch zum Overfitting neigen, wenn nicht richtig reguliert \cite{Goodfellow-et-al-2016}.
+    
+    \item \textbf{Kleine Batches:} Die Verwendung kleinerer Batches kann eine regulierende Wirkung haben und kann das Generalisierungsvermögen des Modells verbessern \cite{Goodfellow-et-al-2016}.
+\end{itemize}
+
+\subsubsection{Hardware-Beschränkungen}
+Die Größe der Batches kann auch durch die verfügbare Hardware begrenzt sein. Insbesondere ist der Arbeitsspeicher oft der begrenzende Faktor \cite{aggarwal_neural_networks_2018}.
+
+\subsubsection{Empfehlungen}
+Es ist eine gängige Praxis, Batch-Größen in Potenzen von 2 zu wählen, da dies häufig zu einer besseren Laufzeiteffizienz führt, besonders auf GPUs \cite{Goodfellow-et-al-2016}.

@@ -1,0 +1,963 @@
+\subsection{Backpropagation im Training neuronaler Netze}
+
+Backpropagation ist ein zentrales Konzept beim Training von neuronalen Netzen und bildet das Herzstück des Gradientenabstiegsverfahrens. Es ermöglicht die effiziente Berechnung des Gradienten der Fehlerfunktion in Bezug auf jedes Gewicht in einem neuronalen Netzwerk.
+
+\subsubsection{Mathematische Grundlagen}
+
+Backpropagation basiert auf der Kettenregel der Differentialrechnung. Für ein tieferes Verständnis betrachten wir zunächst die Ableitung des Fehlers in Bezug auf verschiedene Komponenten:
+
+\begin{enumerate}
+    \item \textbf{Ableitung des Fehlers in Bezug auf die Aktivierung der vorherigen Schicht}:
+    \[
+    \frac{\partial C_0}{\partial a_k^{(L-1)}} = \sum_{j=0}^{n^{L-1}} \frac{\partial a_k^{(L-1)}}{\partial z_j^{(L)}} \frac{\partial z_j^{(L)}}{\partial a_j^{(L)}} \frac{\partial a_j^{(L)}}{\partial C_0}
+    \]
+
+    \item \textbf{Ableitung des Fehlers in Bezug auf die Gewichte}:
+    \[
+    \frac{\partial C_0}{\partial w_{jk}^{(L)}} = a_k^{(L-1)} \frac{\partial z_j^{(L)}}{\partial C_0}
+    \]
+    Hierbei ist der Wert von \(\frac{\partial z_j^{(L)}}{\partial w_{jk}^{(L)}}\) gleich \(a_k^{(L-1)}\) für \(i=j\) und sonst 0.
+
+    \item \textbf{Ableitung des Fehlers in Bezug auf die Verzerrungen (Biases)}:
+    \[
+    \frac{\partial C_0}{\partial b_j^{(L)}} = \frac{\partial z_j^{(L)}}{\partial C_0}
+    \]
+    In dieser Gleichung ist der Wert von \(\frac{\partial z_j^{(L)}}{\partial b_j^{(L)}}\) immer gleich 1.
+\end{enumerate}
+
+\subsubsection{Funktionsweise}
+
+Die Methode verwendet diese Ableitungen, um den Fehler in der Ausgabeschicht rückwärts durch das Netzwerk zu verbreiten und die Gewichte und Verzerrungen in jeder Schicht anzupassen. Laut Chollet \cite[p.~80]{Chollet2021} ist Backpropagation eine Methode, um die Ableitungen einfacher Operationen (wie Addition, ReLU oder Tensorprodukt) zu verwenden, um den Gradienten von beliebig komplexen Kombinationen dieser atomaren Operationen leicht zu berechnen. In einem Netzwerk werden viele Tensoroperationen verkettet, von denen jede eine einfache, bekannte Ableitung hat.
+
+In \cite[p.~43]{heaton_2012} wird erläutert, dass Backpropagation sowohl einen Vorwärts- als auch einen Rückwärtspass hat. Der Vorwärtspass erfolgt, wenn der Ausgang des neuronalen Netzwerks berechnet wird. Die Gradienten werden nur für dieses Element im Trainingssatz berechnet.
+
+\subsubsection{Zusammenfassung}
+
+Zusammenfassend ist Backpropagation ein mächtiges Werkzeug, das die Effizienz des Trainings neuronaler Netze durch die systematische Anwendung der Kettenregel der Differentialrechnung drastisch verbessert. Es ermöglicht die schnelle Konvergenz und Optimierung der Gewichte und Biases, was zu einem besser trainierten Modell führt.
+
+
+
+
+Sie haben eine Kostenfunktion C0C0​ definiert als:
+C0=∑j=0nL−1(aj[L]−yj)2C0​=∑j=0nL−1​​(aj[L]​−yj​)2
+
+Um die Kostenfunktion zu minimieren, müssen Sie den Gradienten in Bezug auf alle Gewichtungen und Bias berechnen. Mit Hilfe der Kettenregel können Sie die partielle Ableitung der Kostenfunktion in Bezug auf jedes Gewicht wie folgt ausdrücken:
+
+∂C0∂wjk[L]=∂wjk[L]∂zj[L]∂zj[L]∂aj[L]∂aj[L]∂C0∂wjk[L]​∂C0​​=∂zj[L]​∂wjk[L]​​∂aj[L]​∂zj[L]​​∂C0​∂aj[L]​​
+
+
+
+Für die Rückpropagation definieren Sie den Fehler in der Ausgabeschicht durch:
+∂
+�
+0
+∂
+�
+�
+[
+�
+]
+=
+2
+(
+�
+�
+[
+�
+]
+−
+�
+�
+)
+∂a 
+j
+[L]
+​
+ 
+∂C 
+0
+​
+ 
+​
+ =2(a 
+j
+[L]
+​
+ −y 
+j
+​
+ )
+wobei 
+�
+�
+[
+�
+]
+a 
+j
+[L]
+​
+  die Aktivierung der j-ten Einheit in der Ausgabeschicht und 
+�
+�
+y 
+j
+​
+  der tatsächliche Wert für diese Einheit ist.
+
+Der nächste Schritt besteht darin, den Fehler durch das Netzwerk zurückzupropagieren, um den Beitrag jeder Gewichtung und jedes Bias zur Gesamtkostenfunktion zu ermitteln. Um das zu tun, berechnen Sie die Ableitung der Aktivierungsfunktion 
+�
+�
+[
+�
+]
+a 
+j
+[L]
+​
+  in Bezug auf die lineare Kombination 
+�
+�
+[
+�
+]
+z 
+j
+[L]
+​
+  mit:
+∂
+�
+�
+[
+�
+]
+∂
+�
+�
+[
+�
+]
+=
+�
+′
+(
+�
+�
+[
+�
+]
+)
+∂z 
+j
+[L]
+​
+ 
+∂a 
+j
+[L]
+​
+ 
+​
+ =σ 
+′
+ (z 
+j
+[L]
+​
+ )
+wobei 
+�
+′
+(
+�
+�
+[
+�
+]
+)
+σ 
+′
+ (z 
+j
+[L]
+​
+ ) die Ableitung der Aktivierungsfunktion ist.
+
+Um die Ableitung der linearen Kombination 
+�
+�
+[
+�
+]
+z 
+j
+[L]
+​
+  in Bezug auf die Gewichtung 
+�
+�
+�
+[
+�
+]
+w 
+jk
+[L]
+​
+  zu berechnen, verwenden Sie:
+∂
+�
+�
+[
+�
+]
+∂
+�
+�
+�
+[
+�
+]
+=
+�
+�
+[
+�
+−
+1
+]
+∂w 
+jk
+[L]
+​
+ 
+∂z 
+j
+[L]
+​
+ 
+​
+ =a 
+k
+[L−1]
+​
+ 
+
+Jetzt kombinieren Sie alle diese Teile mit der Kettenregel:
+∂
+�
+0
+∂
+�
+�
+�
+[
+�
+]
+=
+2
+(
+�
+�
+[
+�
+]
+−
+�
+�
+)
+⋅
+�
+′
+(
+�
+�
+[
+�
+]
+)
+⋅
+�
+�
+[
+�
+−
+1
+]
+∂w 
+jk
+[L]
+​
+ 
+∂C 
+0
+​
+ 
+​
+ =2(a 
+j
+[L]
+​
+ −y 
+j
+​
+ )⋅σ 
+′
+ (z 
+j
+[L]
+​
+ )⋅a 
+k
+[L−1]
+​
+ 
+
+Schließlich, um den Gradienten der Kostenfunktion 
+�
+0
+C 
+0
+​
+  in Bezug auf alle Gewichtungen darzustellen, verwenden Sie:
+∇
+�
+[
+�
+]
+�
+0
+=
+(
+2
+(
+�
+[
+�
+]
+−
+�
+)
+⊙
+�
+′
+(
+�
+[
+�
+]
+)
+)
+�
+[
+�
+−
+1
+]
+�
+∇ 
+W 
+[L]
+ 
+​
+ C 
+0
+​
+ =(2(a 
+[L]
+ −y)⊙σ 
+′
+ (Z 
+[L]
+ ))A 
+[L−1] 
+T
+ 
+ 
+
+Mit diesen Gradienten können Sie die Gewichtungen und Biasse im neuronalen Netzwerk aktualisieren, indem Sie einen Optimierungsansatz wie den Gradientenabstieg verwenden.
+
+
+Dabei setzt sich jede Komponente der Matrix wie folgt zusammen:
+
+∂
+�
+0
+∂
+�
+�
+�
+[
+�
+]
+=
+2
+(
+�
+�
+[
+�
+]
+−
+�
+�
+)
+⋅
+�
+′
+(
+�
+�
+[
+�
+]
+)
+⋅
+�
+�
+[
+�
+−
+1
+]
+∂w 
+ij
+[L]
+​
+ 
+∂C 
+0
+​
+ 
+​
+ =2(a 
+i
+[L]
+​
+ −y 
+i
+​
+ )⋅σ 
+′
+ (z 
+i
+[L]
+​
+ )⋅a 
+j
+[L−1]
+​
+ 
+
+So erhalten wir die gesamte Matrix der partiellen Ableitungen:
+
+∇
+�
+[
+�
+]
+�
+0
+=
+(
+2
+(
+�
+1
+[
+�
+]
+−
+�
+1
+)
+⋅
+�
+′
+(
+�
+1
+[
+�
+]
+)
+⋅
+�
+1
+[
+�
+−
+1
+]
+⋯
+2
+(
+�
+1
+[
+�
+]
+−
+�
+1
+)
+⋅
+�
+′
+(
+�
+1
+[
+�
+]
+)
+⋅
+�
+�
+[
+�
+−
+1
+]
+2
+(
+�
+2
+[
+�
+]
+−
+�
+2
+)
+⋅
+�
+′
+(
+�
+2
+[
+�
+]
+)
+⋅
+�
+1
+[
+�
+−
+1
+]
+⋯
+2
+(
+�
+2
+[
+�
+]
+−
+�
+2
+)
+⋅
+�
+′
+(
+�
+2
+[
+�
+]
+)
+⋅
+�
+�
+[
+�
+−
+1
+]
+⋮
+⋱
+⋮
+2
+(
+�
+�
+[
+�
+]
+−
+�
+�
+)
+⋅
+�
+′
+(
+�
+�
+[
+�
+]
+)
+⋅
+�
+1
+[
+�
+−
+1
+]
+⋯
+2
+(
+�
+�
+[
+�
+]
+−
+�
+�
+)
+⋅
+�
+′
+(
+�
+�
+[
+�
+]
+)
+⋅
+�
+�
+[
+�
+−
+1
+]
+)
+∇ 
+W 
+[L]
+ 
+​
+ C 
+0
+​
+ = 
+⎝
+⎛
+​
+  
+2(a 
+1
+[L]
+​
+ −y 
+1
+​
+ )⋅σ 
+′
+ (z 
+1
+[L]
+​
+ )⋅a 
+1
+[L−1]
+​
+ 
+2(a 
+2
+[L]
+​
+ −y 
+2
+​
+ )⋅σ 
+′
+ (z 
+2
+[L]
+​
+ )⋅a 
+1
+[L−1]
+​
+ 
+⋮
+2(a 
+n
+[L]
+​
+ −y 
+n
+​
+ )⋅σ 
+′
+ (z 
+n
+[L]
+​
+ )⋅a 
+1
+[L−1]
+​
+ 
+​
+  
+⋯
+⋯
+⋱
+⋯
+​
+  
+2(a 
+1
+[L]
+​
+ −y 
+1
+​
+ )⋅σ 
+′
+ (z 
+1
+[L]
+​
+ )⋅a 
+m
+[L−1]
+​
+ 
+2(a 
+2
+[L]
+​
+ −y 
+2
+​
+ )⋅σ 
+′
+ (z 
+2
+[L]
+​
+ )⋅a 
+m
+[L−1]
+​
+ 
+⋮
+2(a 
+n
+[L]
+​
+ −y 
+n
+​
+ )⋅σ 
+′
+ (z 
+n
+[L]
+​
+ )⋅a 
+m
+[L−1]
+​
+ 
+​
+  
+⎠
+⎞
+​
+ 
+
+Die Größe dieser Matrix ist 
+�
+×
+�
+n×m, wobei 
+�
+n die Anzahl der Neuronen in Schicht 
+�
+L und 
+�
+m die Anzahl der Neuronen in Schicht 
+�
+−
+1
+L−1 ist.
+
+Jeder Eintrag in dieser Matrix gibt die Änderungsrate der Kostenfunktion 
+�
+0
+C 
+0
+​
+  in Bezug auf das entsprechende Gewicht an. Mit dieser Matrix können Sie die Gewichtungen in Schicht 
+�
+L aktualisieren, um die Kostenfunktion zu minimieren.
+
+
+\subsection{Backpropagation im Training neuronaler Netze}
+
+Backpropagation ist ein zentrales Konzept beim Training von neuronalen Netzen und bildet das Herzstück des Gradientenabstiegsverfahrens. Es ermöglicht die effiziente Berechnung des Gradienten der Fehlerfunktion in Bezug auf jedes Gewicht in einem neuronalen Netzwerk.
+
+\subsubsection{Mathematische Grundlagen}
+
+Backpropagation basiert auf der Kettenregel der Differentialrechnung. Für ein tieferes Verständnis betrachten wir zunächst die Ableitung des Fehlers in Bezug auf verschiedene Komponenten:
+
+\begin{enumerate}
+    \item \textbf{Ableitung des Fehlers in Bezug auf die Aktivierung der vorherigen Schicht}:
+    \[
+    \frac{\partial C_0}{\partial a_k^{(L-1)}} = \sum_{j=0}^{n^{L-1}} \frac{\partial a_k^{(L-1)}}{\partial z_j^{(L)}} \frac{\partial z_j^{(L)}}{\partial a_j^{(L)}} \frac{\partial a_j^{(L)}}{\partial C_0}
+    \]
+
+    \item \textbf{Ableitung des Fehlers in Bezug auf die Gewichte}:
+    \[
+    \frac{\partial C_0}{\partial w_{jk}^{(L)}} = a_k^{(L-1)} \frac{\partial z_j^{(L)}}{\partial C_0}
+    \]
+    Hierbei ist der Wert von \(\frac{\partial z_j^{(L)}}{\partial w_{jk}^{(L)}}\) gleich \(a_k^{(L-1)}\) für \(i=j\) und sonst 0.
+
+    \item \textbf{Ableitung des Fehlers in Bezug auf die Verzerrungen (Biases)}:
+    \[
+    \frac{\partial C_0}{\partial b_j^{(L)}} = \frac{\partial z_j^{(L)}}{\partial C_0}
+    \]
+    In dieser Gleichung ist der Wert von \(\frac{\partial z_j^{(L)}}{\partial b_j^{(L)}}\) immer gleich 1.
+\end{enumerate}
+
+\subsubsection{Funktionsweise}
+
+Die Methode verwendet diese Ableitungen, um den Fehler in der Ausgabeschicht rückwärts durch das Netzwerk zu verbreiten und die Gewichte und Verzerrungen in jeder Schicht anzupassen. Laut Chollet \cite[p.~80]{Chollet2021} ist Backpropagation eine Methode, um die Ableitungen einfacher Operationen (wie Addition, ReLU oder Tensorprodukt) zu verwenden, um den Gradienten von beliebig komplexen Kombinationen dieser atomaren Operationen leicht zu berechnen. In einem Netzwerk werden viele Tensoroperationen verkettet, von denen jede eine einfache, bekannte Ableitung hat.
+
+In \cite[p.~43]{heaton_2012} wird erläutert, dass Backpropagation sowohl einen Vorwärts- als auch einen Rückwärtspass hat. Der Vorwärtspass erfolgt, wenn der Ausgang des neuronalen Netzwerks berechnet wird. Die Gradienten werden nur für dieses Element im Trainingssatz berechnet.
+
+\subsubsection{Zusammenfassung}
+
+Zusammenfassend ist Backpropagation ein mächtiges Werkzeug, das die Effizienz des Trainings neuronaler Netze durch die systematische Anwendung der Kettenregel der Differentialrechnung drastisch verbessert. Es ermöglicht die schnelle Konvergenz und Optimierung der Gewichte und Biases, was zu einem besser trainierten Modell führt.
+
+
+\subsection{Vorwärtspropagation in Neuronalen Netzwerken}
+\subsubsection{Schicht-für-Schicht-Propagation}
+Beginnend mit der Eingabeschicht \( A^{[0]} \), die im Wesentlichen die Eingabedaten \( X \) sind, berechnet jede nachfolgende Schicht \( Z^{[l]} \) und \( A^{[l]} \) entsprechend den oben genannten Gleichungen. Dies bildet das Kernstück der Vorwärtspropagation.
+
+\subsubsection{Dimensionalität und Netzwerkarchitektur}
+Die Anzahl der Neuronen in jeder Schicht und die Art der verwendeten Aktivierungsfunktion können die Leistung des Netzwerks erheblich beeinflussen. Es ist wichtig, die Dimensionalität jeder Schicht während der Entwurfsphase zu berücksichtigen, um ein effektives Lernen sicherzustellen.
+
+Die Vorwärtspropagation ist ein wesentlicher Prozess in neuronalen Netzwerken, der die Übertragung von Eingabedaten durch die Netzwerkarchitektur ermöglicht, um die Ausgabe zu erzeugen \cite[p.~1421]{russell2021ai}. Sie ist eine Abfolge von mathematischen Operationen, die Gewichtungen, Biases und Aktivierungsfunktionen involvieren \cite[p.~73]{Chollet2021}.
+
+\subsubsection{Gewichtsmatrix \( W^{[l]} \) und Bias-Vektor \( b^{[l]} \)}
+Die Gewichtsmatrix für die Schicht \( l \) wird als \( W^{[l]} \) bezeichnet, und \( b^{[l]} \) ist der Bias-Vektor für dieselbe Schicht \cite[p.~46]{heaton_2012}. Diese Parameter werden während des Backpropagation-Prozesses trainiert, um den Fehler zwischen der vorhergesagten und der tatsächlichen Ausgabe zu minimieren \cite[p.~41]{aggarwal_neural_networks_2018}.
+
+\begin{equation}
+Z^{[l]} = W^{[l]} A^{[l-1]} + b^{[l]}
+\end{equation}
+
+\subsubsection{Aktivierungsfunktionen}
+Eine Aktivierungsfunktion, normalerweise durch \( \sigma \) bezeichnet, transformiert die gewichtete Summe \( Z^{[l]} \) in die aktivierte Ausgabe \( A^{[l]} \) \cite[p.~1421]{russell2021ai}.
+
+\begin{equation}
+A^{[l]} = \sigma(Z^{[l]})
+\end{equation}
+
+\begin{equation}
+A^{[l]} = \sigma \left( 
+\begin{pmatrix}
+w_{1,1}^{[l-1,l]} & w_{1,2}^{[l-1,l]} & \cdots & w_{1,m}^{[l-1,l]} \\
+w_{2,1}^{[l-1,l]} & w_{2,2}^{[l-1,l]} & \cdots & w_{2,m}^{[l-1,l]} \\
+\vdots & \vdots & \ddots & \vdots \\
+w_{n,1}^{[l-1,l]} & w_{n,2}^{[l-1,l]} & \cdots & w_{n,m}^{[l-1,l]}
+\end{pmatrix}
+\begin{pmatrix}
+A_1^{[l-1]} \\
+A_2^{[l-1]} \\
+\vdots \\
+A_m^{[l-1]}
+\end{pmatrix}
++
+\begin{pmatrix}
+b_1^{[l]} \\
+b_2^{[l]} \\
+\vdots \\
+b_n^{[l]}
+\end{pmatrix}
+\right)
+\end{equation}
+
+\subsubsection{Schicht-für-Schicht-Propagation}
+Beginnend mit der Eingabeschicht \( A^{[0]} \), die im Wesentlichen die Eingabedaten \( X \) sind, berechnet jede nachfolgende Schicht \( Z^{[l]} \) und \( A^{[l]} \) entsprechend den oben genannten Gleichungen \cite[p.~1421]{russell2021ai}.
+
+\subsubsection{Dimensionalität und Netzwerkarchitektur}
+Die Anzahl der Neuronen in jeder Schicht und die Art der verwendeten Aktivierungsfunktion können die Leistung des Netzwerks erheblich beeinflussen \cite[p.~1408]{russell2021ai}. Es ist wichtig, die Dimensionalität jeder Schicht während der Entwurfsphase zu berücksichtigen, um ein effektives Lernen sicherzustellen \cite[p.~73]{Chollet2021}.
+
+
+
+\subsection{Backpropagation}
+
+Wenn Sie die Vorwärtspropagation so haben:
+
+\begin{equation}
+Z^{[l]} = W^{[l]}A^{[l-1]} + b^{[l]}
+\end{equation}
+
+\begin{equation}
+A^{[l]} = \sigma(Z^{[l]})
+\end{equation}
+
+Für die Backpropagation können Sie den Fehlergradienten für jede Schicht $l$ in Matrixnotation als:
+
+\begin{equation}
+\delta Z^{[l]} = \delta A^{[l]} \odot \sigma'(Z^{[l]})
+\end{equation}
+
+wobei $\odot$ das elementweise Produkt ist und $\sigma'$ die Ableitung der Aktivierungsfunktion.
+
+Der Fehlergradient bezüglich der Gewichtungen und Biases wird dann:
+
+\begin{equation}
+\delta W^{[l]} = \delta Z^{[l]} A^{[l-1]T}
+\end{equation}
+
+\begin{equation}
+\delta b^{[l]} = \delta Z^{[l]}
+\end{equation}
+
+Um den Fehlergradienten für die vorherige Schicht zu erhalten:
+
+\begin{equation}
+\delta A^{[l-1]} = W^{[l]T} \delta Z^{[l]}
+\end{equation}
+
+In Matrixnotation können Sie dies darstellen als:
+
+\begin{equation}
+\begin{pmatrix}
+\delta z_{1}^{[l]} \\
+\delta z_{2}^{[l]} \\
+\vdots \\
+\delta z_{n}^{[l]}
+\end{pmatrix}
+=
+\begin{pmatrix}
+w_{1,1}^{[l]} & w_{1,2}^{[l]} & \dots & w_{1,n}^{[l]} \\
+w_{2,1}^{[l]} & w_{2,2}^{[l]} & \dots & w_{2,n}^{[l]} \\
+\vdots & \vdots & \ddots & \vdots \\
+w_{n,1}^{[l]} & w_{n,2}^{[l]} & \dots & w_{n,n}^{[l]}
+\end{pmatrix}
+\begin{pmatrix}
+\delta z_{1}^{[l]} \\
+\delta z_{2}^{[l]} \\
+\vdots \\
+\delta z_{n}^{[l]}
+\end{pmatrix}
+\end{equation}
+
+Beachten Sie, dass die Größe der Matrizen und Vektoren von den Dimensionen Ihrer Netzwerkschicht abhängt.

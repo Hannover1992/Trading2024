@@ -1,0 +1,20 @@
+
+
+\subsection{Markow-Entscheidungsprozesse und die Bellman-Gleichung}
+
+Markow-Entscheidungsprozesse sind grundlegend für das Verständnis von Entscheidungsproblemen in stochastischen Umgebungen. Sie werden oft modelliert mit Zuständen \( s \), Aktionen \( a \), Zustandsübergängen \( P(s' | s, a) \) und Belohnungen \( R(s, a, s') \). Die Bellman-Gleichung dient als Eckpfeiler für die Lösung von MDPs und kann wie folgt geschrieben werden:
+\[
+U(s) = \max_{a \in A(s)} \sum_{s'} P(s' | s, a) \left[ R(s, a, s') + \gamma U(s') \right]
+\label{eq: Bellman }
+\]
+Diese Gleichung erklärt uns im Wesentlichen den Nutzen eines Zustands \( s \) unter einer optimalen Policy. Sie repräsentiert die erwartete Summe der Belohnungen für einen Agenten, der von Zustand \( s \) startet und sich in der Zukunft optimal verhält \cite{russell2021ai}.
+
+\subsubsection{Wenn \( \gamma = 0 \): Übergang zu Banditenproblemen}
+\label{sec: discounted future reward}
+
+Der Diskontfaktor \( \gamma \) ist wichtig, da er sofortige und zukünftige Belohnungen ausbalanciert. Wenn jedoch \( \gamma = 0 \), geraten wir in ein Szenario, das eher den Multi-Armed-Bandit-Problemen ähnelt, bei denen der Agent nur an sofortigen Belohnungen interessiert ist. In diesem Fall vereinfacht sich die Bellman-Gleichung zu:
+\[
+U(s) = \max_{a \in A(s)} \sum_{s'} P(s' | s, a) \left[ R(s, a, s') \right]
+\]
+
+Hier berücksichtigt der Agent nicht den zukünftigen Nutzen der Zustände \( s' \), in die er übergehen könnte. Er maximiert nur seine sofortige Belohnung, was das Problem zu einem Einzelschritt-Entscheidungsproblem macht \cite{SuttonBarto2018}.

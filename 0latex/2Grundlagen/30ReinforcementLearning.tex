@@ -1,0 +1,22 @@
+\subsection{Einleitung}
+
+Nachdem wir die grundlegenden Konzepte neuronaler Netze und die Mechanismen von Forward- und Backpropagation ausführlich behandelt haben, wenden wir uns nun dem Thema Reinforcement Learning (RL) zu. Die zuvor erklärten neuronalen Netze dienen als Grundlage für RL und werden insbesondere als Funktionenapproximatoren verwendet, um Agenten zu simulieren und zu trainieren. In diesem Abschnitt beschäftigen wir uns mit den Kernkonzepten und Herausforderungen des Reinforcement Learning.
+
+\paragraph{Grundlagen des Reinforcement Learning}
+
+Reinforcement Learning ist ein maschinelles Lernverfahren, bei dem ein Agent in einer Umgebung agiert, um ein bestimmtes Ziel zu erreichen. Im Kern des Prozesses stehen zwei Hauptkomponenten: der Agent und die Umgebung (auch als Simulation bezeichnet). Der Agent nimmt den aktuellen Zustand der Umgebung wahr und trifft auf dieser Grundlage Entscheidungen, die als Aktionen bezeichnet werden \cite{morales2020grokking}. Diese Aktionen werden an die Umgebung übermittelt, welche daraufhin in einen neuen Zustand übergeht und dem Agenten eine Belohnung (engl. Reward) ausgibt.
+
+Dieser Prozess kann in zwei Haupttypen von RL-Verfahren unterteilt werden: das modellbasierte und das modellfreie RL \cite{russell2021ai}. Bei modellbasierten Verfahren verwendet der Agent ein Übergangsmodell der Umgebung, um die Belohnungssignale zu interpretieren und Entscheidungen zu treffen. Im Gegensatz dazu lernt der Agent bei modellfreien Verfahren eine direktere Darstellung des Verhaltens, oft durch das Erlernen einer Q-Funktion, die die Qualität einer Aktion in einem bestimmten Zustand bewertet \cite{russell2021ai}.
+
+Es ist wichtig zu betonen, dass RL-Agenten durch direkte Interaktion mit ihrer Umgebung lernen, ohne die Notwendigkeit einer beaufsichtigenden Instanz oder eines vollständigen Modells der Umgebung \cite{SuttonBarto2018}. Jede Interaktion, die als Zeitschritt bezeichnet wird, ermöglicht dem Agenten, seine Leistung durch Versuch und Irrtum zu verbessern \cite{morales2020grokking}.
+
+Die Funktionsweise von RL kann als zyklisch beschrieben werden: Der Agent beobachtet die Umgebung, trifft eine Entscheidung, die Umgebung ändert ihren Zustand und gibt eine Belohnung zurück, und der neue Zustand wird dem Agenten wieder präsentiert. Durch diesen zyklischen Prozess lernt der Agent, optimale Entscheidungen zu treffen, um das gestellte Ziel zu erreichen.
+
+\paragraph{Herausforderungen im RL}
+
+RL stellt verschiedene Herausforderungen dar, die es von anderen maschinellen Lernmethoden unterscheiden. Ein wichtiger Aspekt ist die Sequenzialität der Entscheidungen. Die Agenten müssen nicht nur einmalige Entscheidungen treffen, sondern auch eine Sequenz von Aktionen planen, um ein optimales Ergebnis zu erzielen \cite{morales2020grokking}. Darüber hinaus müssen die Agenten in einer Umgebung mit Unsicherheit und Unvollkommenheit agieren, was den Einsatz von Methoden wie dem \textit{Markov-Entscheidungsprozess} erforderlich macht \cite{brunton2019data}.
+
+\paragraph{Erweiterte Methoden und DDPG}
+
+Der im nächsten Abschnitt behandelte DDPG (Deep Deterministic Policy Gradients) Algorithmus stellt eine fortschrittliche Methode in der Reinforcement-Learning-Domäne dar. Er übertrifft traditionellere Ansätze wie Policy Gradient oder Deep Q Networks (DQN) durch seine effizientere und schnellere Fähigkeit zur Identifizierung optimaler Policies \cite{morales2020grokking}.
+

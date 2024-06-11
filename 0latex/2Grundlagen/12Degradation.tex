@@ -1,0 +1,23 @@
+\subsection{Degradation von Kondensatoren und MOSFETs in DC-DC-Konvertern}
+
+Die Zuverlässigkeit und Effizienz von DC-DC-Konvertern sind zunehmend von der Degradation ihrer Schlüsselkomponenten, insbesondere von Kondensatoren und MOSFETs, beeinträchtigt.
+
+\paragraph{Kondensatoren}
+
+Kondensatoren sind anfällig für verschiedene Arten von Ausfallmodi, darunter Änderungen des Verlustfaktors (tan $\delta$), der Impedanz und des Dissipationsfaktors. Diese Parameter sind entscheidend für die Beurteilung der Zuverlässigkeit eines Systems. Ebenso ist die erhöhte Äquivalente Serienresistenz (ESR) von Elektrolytkondensatoren, die elektrischen und thermischen Belastungen ausgesetzt sind, ein weiterer entscheidender Faktor für die Degradation.\cite{jeong2023degradation}
+
+\paragraph{MOSFETs}
+
+Bei MOSFETs kann die Degradation aufgrund von thermischen Spannungen zu einem Gate-Source-Kurzschluss oder einem Drain-Source-Kurzschluss führen. Die Degradation der Transistoren erhöht deren Leistungsverluste und beschleunigt damit den Degradationsprozess weiter.\cite{wensdesign2022}
+
+
+
+\paragraph{Kontrolle und Überwachung}
+
+Aktuelle Forschungsbemühungen konzentrieren sich auf die Entwicklung von Kontrollalgorithmen, um die Degradation zu verzögern und die Zuverlässigkeit der Konverter zu erhöhen. Dazu gehören auch Verfahren zur Schätzung des Zustands der Degradation in Echtzeit.
+\cite{choi2013pulsewidth}
+
+\paragraph{Integration mit neuronalen Netzen für Kondensatoren und MOSFETs}
+
+Neuronale Netze können verwendet werden, um aktiv entgegensteuernde Maßnahmen zur Verlangsamung der Degradation von Schlüsselkomponenten wie Kondensatoren und MOSFETs in DC-DC-Konvertern einzuleiten. Durch die kontinuierliche Analyse von Betriebsparametern wie Temperatur und Spannung sind diese Netze in der Lage, den Zustand der Degradation in Echtzeit zu erfassen. Sobald kritische Zustände, die auf Degradation hindeuten, erkannt werden, können die neuronalen Netze automatisch die PID-Koeffizienten des Konverters anpassen. Dies dient dazu, die Auswirkungen der Degradation zu minimieren und die Zuverlässigkeit des Systems zu erhöhen.
+\cite{morales2020grokking}

@@ -24,7 +24,7 @@ class BitcoinData(IDataSource):
         price = df['24h High (USD)'].values
         # df = df[['Date', '24h High (USD)']]  
         # df.columns = ['Days', 'Price']  # Renaming columns to 'Days' and 'Price'
-        self.show_plot(t, price)
+        # self.show_plot(t, price)
         return pd.DataFrame({'Tage': t, 'Preis': price})
 
     def show_plot(self, x, y):
@@ -42,13 +42,14 @@ class MockSyntheticSinusData(IDataSource):
         return self.generate_synthetic_data()
 
     def generate_synthetic_data(self) -> pd.DataFrame:
-        days = 400
-        start_price = 900
+        days = 25
+        start_price = 500
         end_price = 500
         noise_level = 50  # Significantly increased noise
 
         t = np.arange(0, days)
         linear_trend = np.linspace(start_price, end_price, days)
+        c = 1000
 
         # Multiple sinusoidal patterns with varying parameters
         sinusoidal = sum(
@@ -57,9 +58,11 @@ class MockSyntheticSinusData(IDataSource):
         )
 
         noise = np.random.normal(0, noise_level, days)
+        #assert that the price is always positive
 
-        price = linear_trend + sinusoidal + noise
-        self.show_plot(t, price)
+        price = linear_trend + sinusoidal + noise + c
+        price = np.maximum(price, 50)
+        # self.show_plot(t, price)
         return pd.DataFrame({'Tage': t, 'Preis': price})
 
     def plot_synthetic_data(self, data: pd.DataFrame):

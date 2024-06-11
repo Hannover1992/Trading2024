@@ -1,0 +1,30 @@
+\section{Hyperparameter}
+\label{sec:Hyperparameter_Architecture_Comparison}
+In diesem Abschnitt präsentieren wir eine Übersicht der Hyperparameter, unter denen unsere DDPG-Modelle trainiert wurden. Die Bedeutung dieser Parameter wurde bereits in einem früheren Kapitel detailliert erörtert. Hier fokussieren wir uns auf die spezifischen Einstellungen, die für das Training der unterschiedlichen Modelle verwendet wurden. 
+
+\begin{table}[htbp]
+		\centering
+		\caption{Allgemeiner Vergleich der Hyperparameter für das kleine und große DDPG-Modell}
+		\label{tab:hyperparameters_description}
+		\begin{tabular}{lcc}
+				\hline
+				\textbf{Parameter} & \textbf{Einfaches Modell} & \textbf{Fortgeschrittenes Modell} \\				\hline
+				ALPHA \ref{sec: Learnign Rate}  & Höhere Lernrate & Niedrigere Lernrate \\
+				WORKER & Standardanzahl & Standardanzahl \\
+				ITERATION & Einzeliteration & Einzeliteration \\
+				STEPS & Weniger Trainingsschritte & Mehr Trainingsschritte \\
+				BATCH\_SIZE \ref{sec: Batch} & Kleinere Batch-Größe & Größere Batch-Größe \\
+				EXPLOITATION   & Standard-Exploitation & Standard-Exploitation \\
+				LAYERS \ref{sec: Forward Propagation} & Weniger Schichten & Mehr Schichten \\
+				LAYER\_1 & Standardanzahl Neuronen & Standardanzahl Neuronen \\
+				LAYER\_2 & Standardanzahl Neuronen & Standardanzahl Neuronen \\
+				NOISE \ref{sec: Exploration versus Exploitation}  & Moderate Exploration & Höhere Exploration \\
+				GAMMA \ref{sec: discounted future reward}  & Keine Diskontierung & Keine Diskontierung \\
+				\hline
+		\end{tabular}
+\end{table}
+
+Die detaillierten Werte der Hyperparameter werden im folgenden Abschnitt präsentiert, wo wir spezifische Trainingsergebnisse und deren Vergleich darstellen. Die Auswahl und Einstellung dieser Parameter spielen eine entscheidende Rolle im Lernprozess der Modelle und beeinflussen maßgeblich deren Leistung und Effizienz. Im folgenden Abschnitt werden wir die spezifischen Trainingsresultate und ihre Validierung detailliert präsentieren.
+
+\section{Methodik des Vergleichs}
+Zur Validierung der Leistung unserer Modelle haben wir uns für eine spezifische Herangehensweise entschieden, die sich von der Standardtrainingsroutine unterscheidet. Anstatt das Modell kontinuierlich durch den gesamten Trainingspool lernen zu lassen, wurde jeder zehnte "EXPLOITATION" Schritt genutzt, um das Modell anhand eines vordefinierten Referenzwertes zu evaluieren. Dieser Referenzwert wurde bewusst nicht in das Training einbezogen, um eine unabhängige Beurteilung der Modellleistung zu ermöglichen. Die deterministische Natur unserer Netzwerke erleichterte diesen Prozess erheblich, da sie nach dem Training konsistente und wiederholbare Ergebnisse liefern. Dies ermöglichte es uns, die Leistung des Modells präzise zu beurteilen, ohne dass eine Mittelung über mehrere Zustände erforderlich war, wie es bei stochastischen Modellen der Fall gewesen wäre. Die deterministische Architektur gewährleistet, dass die gleichen Eingaben stets zu denselben Ausgaben führen, was die Validierung und das Testen vereinfacht und zuverlässiger macht.

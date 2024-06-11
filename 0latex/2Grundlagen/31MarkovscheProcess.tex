@@ -1,0 +1,59 @@
+\subsection{Markovsche Prozesse und deren Rolle im Reinforcement Learning}
+
+Die Grundlage für viele Reinforcement Learning-Verfahren sind Markov-Entscheidungsprozesse (MDPs). Diese MDPs stellen eine stochastische Version des optimalen Steuerungsproblems dar, welches von Bellman eingeführt wurde \cite{SuttonBarto2018}. Grundlegend geht es bei einem MDP um Entscheidungen, die in einem Zustand getroffen werden, um eine maximale Belohnung in der Zukunft zu erzielen.
+
+\paragraph{Grundlagen der Markovschen Prozesse}
+
+Ein Markov-Entscheidungsprozess ist charakterisiert durch:
+\begin{itemize}
+\item Eine Menge von Zuständen, in denen sich das System befinden kann.
+\item Eine Menge von Aktionen, die in jedem Zustand durchgeführt werden können.
+\item Eine Belohnungsfunktion, die die sofortige Belohnung für den Übergang von einem Zustand in einen anderen definiert.
+\item Eine Übergangsfunktion, die die Wahrscheinlichkeit beschreibt, von einem Zustand in einen anderen überzugehen, nachdem eine bestimmte Aktion ausgeführt wurde.
+\end{itemize}
+
+MDPs basieren auf der Markov-Eigenschaft, die besagt, dass die Zukunft nur vom gegenwärtigen Zustand abhängt und nicht von den vorhergehenden Zuständen. Das bedeutet, dass das System keine Erinnerung an frühere Zustände hat und die Zukunft unabhängig von der Vergangenheit ist, solange der aktuelle Zustand bekannt ist.
+
+Ein entscheidendes Konzept in MDPs ist die sogenannte "Policy", eine Strategie, die festlegt, welche Aktion in jedem Zustand ausgeführt werden soll, um die kumulative Belohnung über die Zeit zu maximieren \cite{SuttonBarto2018}.
+
+Ein einfacher Markov-Prozess kann als Zustandsdiagramm dargestellt werden. Im folgenden Beispiel gibt es drei Zustände: $S_1$, $S_2$, und $S_3$. 
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+                    semithick]
+      % Zustände
+      \node[state] (S1)              {$S_1$};
+      \node[state] (S2) [right=of S1] {$S_2$};
+      \node[state] (S3) [right=of S2] {$S_3$};
+
+      % Übergänge mit Wahrscheinlichkeiten und Belohnungen
+      \path (S1) edge [bend left] node[above] {0.7, +5} (S2)
+            (S2) edge [bend left] node[above] {0.5, +3} (S3)
+            (S3) edge [bend left] node[above] {0.8, +2} (S1)
+            (S1) edge [loop left] node {0.3, +1} (S1)
+            (S2) edge [loop above] node {0.5, +1} (S2)
+            (S3) edge [loop right] node {0.2, +1} (S3);
+    \end{tikzpicture}
+    \caption{Beispiel für einen einfachen Markov-Prozess mit Übergangsbelohnungen}
+    \label{fig:MarkovProzessBelohnungen}
+\end{figure}
+
+\paragraph{Legende}
+\begin{itemize}
+    \item Knoten: Zustände ($S_1$, $S_2$, $S_3$ usw.)
+    \item Kanten: Erste Zahl ist die Übergangswahrscheinlichkeit, zweite Zahl ist die Belohnung für den Übergang
+\end{itemize}
+
+Im Diagramm repräsentieren die Knoten die Zustände und die Kanten repräsentieren die Übergangswahrscheinlichkeiten zwischen den Zuständen. 
+
+\paragraph{Anwendung von Markovschen Prozessen im Reinforcement Learning}
+
+Die Anwendung von MDPs im Reinforcement Learning ermöglicht es Agenten, optimale Strategien für komplexe Aufgaben zu erlernen. Dies geschieht durch die Interaktion des Agenten mit der Umgebung und die Anpassung seiner Strategie basierend auf den erhaltenen Belohnungen. Methoden wie "Policy Iteration" und "Value Iteration" werden verwendet, um optimale Policies zu ermitteln \cite{russell2021ai}.
+
+Ein erweitertes Konzept von MDPs sind die POMDPs (Partially Observable Markov Decision Processes), bei denen der Agent nicht immer den genauen Zustand der Umgebung kennt. Dies führt zu komplexeren Strategien, bei denen der Agent versucht, Unsicherheiten durch Informationsbeschaffung zu reduzieren \cite{morales2020grokking}.
+
+Abschließend können wir sagen, dass Markov-Entscheidungsprozesse ein zentrales Konzept im Reinforcement Learning darstellen, das es Agenten ermöglicht, in einer Vielzahl von Umgebungen effektive Strategien zu entwickeln.
+
+
+

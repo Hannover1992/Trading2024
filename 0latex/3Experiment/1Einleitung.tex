@@ -1,0 +1,19 @@
+\section{Motivation und Zielsetzung}
+
+Das zentrale Anliegen dieser Arbeit ist die Entwicklung eines effizienten Agenten, basierend auf den Prinzipien des Reinforcement Learning, der in der Lage ist, auf Degenerationsprozesse in elektronischen Schaltungen zu reagieren. Dieser Agent soll durch ein neuronales Netzwerk realisiert werden und in der Lage sein, optimale PID-Reglereinstellungen für sich verändernde Degenerationszustände innerhalb einer Schaltung zu bestimmen. Ein DC-DC-Konverter dient als Ausgangsmodell, um den Agenten zu trainieren und die grundlegenden Prinzipien zu veranschaulichen, mit dem Ziel, eine generalisierbare Lösung zu entwickeln, die auf unterschiedliche Schaltungskontexte anwendbar ist.
+
+\section{Herausforderungen und Ziele}
+
+Die Entwicklung eines leistungsfähigen Reinforcement-Learning-Systems stellt mehrere Herausforderungen dar, die in diesem Experiment adressiert werden müssen:
+
+\begin{enumerate}
+    \item \textbf{Agentenwahl und -konfiguration:} Die Auswahl und Konfiguration des Agenten, insbesondere die Architektur des neuronalen Netzes, sind entscheidend, um effektives Lernen zu gewährleisten. Der Agent muss in der Lage sein, die komplexen Zusammenhänge zwischen den Zuständen der Schaltung und den entsprechenden Aktionen zu erfassen.
+    
+    \item \textbf{Aufbau einer effizienten Simulation:} Eine Simulation, die schnell genug ist, um zeitnahe Trainingsdurchläufe zu ermöglichen, ist für die Konvergenz des Modells von entscheidender Bedeutung. Die Simulationsumgebung muss akkurate Rückmeldungen in einer Zeitspanne liefern, die praktikables und iteratives Training zulässt.
+    
+    \item \textbf{Bestimmung der Reward-Funktion:} Die Definition einer angemessenen Reward-Funktion ist essentiell, um das Agentenverhalten in Richtung der gewünschten Zielvorgaben zu lenken. Die Reward-Funktion muss so gestaltet sein, dass sie das System zuverlässig zum gewünschten Leistungsziel führt.
+    
+    \item \textbf{Validierung des trainierten Netzwerks:} Neuronale Netzwerke können oft auch unter suboptimalen Einstellungen zufriedenstellende Ergebnisse liefern. Die eigentliche Herausforderung besteht darin, das Modell so zu trainieren, dass es die Gegebenheiten und Dynamiken der Simulationsumgebung nicht nur nachahmt, sondern auch versteht und die Leistungsfähigkeit der Schaltung präzise verbessert.
+\end{enumerate}
+
+Die Überwindung dieser Herausforderungen erfordert einen methodischen Ansatz, der die Interaktion zwischen den Komponenten des Systems detailliert analysiert und optimiert. 

@@ -1,0 +1,53 @@
+\subsection{Optimierungstechniken}
+
+Die Wahl des Optimierers hat einen erheblichen Einfluss auf die Leistung eines neuronalen Netzwerks. Hier stellen wir einige gängige Optimierungsalgorithmen vor und erläutern den mathematischen Hintergrund des ADAM-Optimierers.
+
+\paragraph{Stochastic Gradient Descent (SGD)}
+\label{sec: Stochastisch Gredient Descent}
+
+Der Stochastic Gradient Descent (SGD) ist ein fundamentales Optimierungsverfahren. 
+Es unterscheidet sich von traditionellen Gradientenabstiegsverfahren dadurch, dass es nicht den gesamten Datensatz verwendet, um die Gradienten der Kostenfunktion zu jedem Schritt zu berechnen. 
+Stattdessen nutzt der SGD nur eine zufällig ausgewählte Teilmenge oder sogar nur eine einzige Dateninstanz, um die Gradienten zu schätzen und die Modellgewichtungen anzupassen. 
+Insbesondere im Rahmen des Reinforcement Learnings, wo zu jedem Zeitpunkt lediglich ein Teildatensatz verfügbar ist, erweist sich der SGD als besonders geeignet. 
+Die stochastische Natur dieses Verfahrens kann helfen, aus lokalen Minima herauszukommen und zu einer besseren Konvergenz des Modells beizutragen.
+\cite{klein_abbeel_cs188}
+
+\paragraph{Momentum}
+
+Momentum berücksichtigt sowohl den aktuellen Gradienten als auch die vorherigen Gradienten, um die Gewichtungen zu aktualisieren. Dadurch wird eine Art "Schwung" erzeugt, der dem Optimierer hilft, lokale Minima zu überwinden.
+
+\paragraph{RMSprop}
+
+Dieser Optimierer passt die Lernrate während des Trainings dynamisch an. Er verwendet den gleitenden Mittelwert der quadrierten Gradienten, um die Gewichtungen zu aktualisieren.
+
+\paragraph{ADAM (Adaptive Moment Estimation)}
+\label{sec: adam optimizer}
+
+ADAM kombiniert die Vorteile von Momentum und RMSprop. Die Gewichtsaktualisierung in ADAM ist durch die folgende Gleichung definiert:
+
+\begin{equation}
+\theta_{t+1} = \theta_t - \alpha \times \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}
+\end{equation}
+
+wobei \(\hat{m}_t\) und \(\hat{v}_t\) Schätzungen des ersten und zweiten Moments der Gradienten sind. Sie werden wie folgt berechnet:
+
+\begin{equation}
+\hat{m}_t = \frac{1}{1-\beta_1^t} \times m_t
+\end{equation}
+\begin{equation}
+\hat{v}_t = \frac{1}{1-\beta_2^t} \times v_t
+\end{equation}
+\begin{equation}
+m_t = \beta_1 \times m_{t-1} + (1-\beta_1) \times g_t
+\end{equation}
+\begin{equation}
+v_t = \beta_2 \times v_{t-1} + (1-\beta_2) \times g_t^2
+\end{equation}
+
+wobei \(g_t\) der Gradient bei Schritt \(t\) ist, \(\beta_1\) und \(\beta_2\) Hyperparameter sind, und \(\alpha\) die Lernrate ist.
+\cite{klein_abbeel_cs188}
+
+\paragraph{Schlussfolgerungen}
+
+Der Optimierer ist entscheidend für die Effizienz des Trainingsprozesses eines neuronalen Netzwerks. Der ADAM-Optimierer ist insbesondere eine ausgezeichnete Wahl für viele Anwendungen, da er sowohl die Vorteile von Momentum als auch von RMSprop kombiniert.
+

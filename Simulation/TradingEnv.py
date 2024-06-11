@@ -14,10 +14,12 @@ from Config import WINDOW_SIZE
 class TradingEnv():
     def __init__(self):
         super(TradingEnv, self).__init__()
+
         self.initial_balance = 10000
         self.cash = self.initial_balance
         self.combined_value_in_cash = self.initial_balance
         self.previous_combined_value_in_cash = self.initial_balance
+
         self.shares = 0
         self.data = MockSyntheticSinusData().get_data()
         # self.data = BitcoinData('./Data/bitcoin.csv').get_data()
@@ -28,8 +30,6 @@ class TradingEnv():
         self.action_space = spaces.Box(low=-1, high=1, shape=(1,), dtype=np.float32)
         # Define observation space within the range of -10000 and +10000
         self.observation_space = spaces.Box(low=self.data['Preis'].min(), high=self.data['Preis'].min(), shape=(WINDOW_SIZE,), dtype=np.float32)
-        self.value_in_cash = self.cash
-        # self.run_tests()
 
 
 
@@ -56,9 +56,11 @@ class TradingEnv():
                 self.shares += shares_to_buy * 0.995
         else:
             if(self.shares > 0.0):
-                shares_to_sell = self.shares * action
-                amount_received = -shares_to_sell * previous_price
-                self.shares += shares_to_sell
+                shares_to_sell = self.shares * abs(action)
+                amount_received = shares_to_sell * previous_price
+                self.shares -= shares_to_sell
+                if(self.shares < 0.0):
+                    print("Shares are negative")
                 self.cash += amount_received * 0.995
 
         new_balance_ratio = self.state.calculate_balance_ratio(self.cash, self.shares, price)

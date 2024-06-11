@@ -1,0 +1,82 @@
+\subsection{Vanishing-Gradient-Problem}
+
+Neuronale Netze, insbesondere tiefe Architekturen, sind anfällig für das Problem der verschwindenden oder explodierenden Gradienten \cite{aggarwal_neural_networks_2018}. 
+Während des Backpropagation-Prozesses können die Gradienten entweder zu klein werden, was als "Verschwinden" bezeichnet wird, oder zu groß, was als "Explodieren" bezeichnet wird. Beide Fälle erschweren das Training erheblich und können dazu führen, dass das Netzwerk nicht konvergiert oder instabil wird.
+
+\subsubsection{Warum ist das ein Problem?}
+
+Verschwindende Gradienten können dazu führen, dass die Gewichtsaktualisierungen für die ersten Schichten im Netzwerk minimal sind, wodurch das Netzwerk ineffizient trainiert wird. 
+Explodierende Gradienten können dazu führen, dass die Gewichtsaktualisierungen zu groß werden, was das Training des Netzwerks destabilisiert \cite{aggarwal_neural_networks_2018}.
+
+\subsubsection{Anpassung der Lernrate und optimierte Backpropagation-Techniken}
+
+Eine Möglichkeit besteht darin, die Lernrate \( \alpha \) dynamisch während des Trainings anzupassen. Wenn der Gradient \( \nabla J \) einen bestimmten Schwellenwert überschreitet, könnte die Lernrate reduziert werden:
+
+\[
+\alpha = \alpha \times \text{decay}
+\]
+
+\subsubsection{Gradient Clipping}
+
+Das sogenannte "Gradient Clipping" begrenzt den Gradienten \( \nabla J \) auf einen maximalen Wert \( C \) \cite{brunton2019data}:
+
+\[
+\nabla J = \min(\nabla J, C)
+\]
+
+\subsubsection{Architektur- und Ressourcenüberlegungen}
+
+Die Wahl der Architektur und der Ressourcen spielt auch eine Rolle bei der Bewältigung von Gradientenproblemen. Ein gut durchdachtes Design kann helfen, das Problem der verschwindenden und explodierenden Gradienten zu mildern \cite{aggarwal_neural_networks_2018}.
+
+
+\subsubsection{ReLU-Aktivierungsfunktion}
+
+Die ReLU-Aktivierungsfunktion ist eine der am häufigsten verwendeten Aktivierungsfunktionen in neuronalen Netzen. Mathematisch wird die ReLU-Funktion wie folgt definiert:
+\[
+f(x) = \max(0, x)
+\]
+
+
+\paragraph{Warum ReLU beim Vanishing-Gradient-Problem hilft:}
+
+Die ReLU-Aktivierungsfunktion hat mehrere Eigenschaften, die sie im Umgang mit dem Vanishing-Gradient-Problem nützlich machen:
+
+\begin{itemize}
+    \item \textbf{Lineare Aktivierung im positiven Bereich:} ReLU ist im positiven Bereich linear, wodurch der Gradient konstant gleich 1 bleibt. Dies erleichtert das Backpropagation-Verfahren, da der Gradient nicht beim Durchlaufen dieses Neurons verschwindet.
+    
+    \item \textbf{Sparsamkeit:} ReLU-Aktivierung führt dazu, dass einige Neuronen einen Ausgang von Null haben. Dies fördert die Sparsamkeit des Netzes, was dazu beitragen kann, Overfitting zu reduzieren.
+    
+    \item \textbf{Einfache Berechnung:} Im Vergleich zu anderen Aktivierungsfunktionen wie Sigmoid oder Tanh ist die ReLU-Funktion rechentechnisch weniger aufwendig, was zu schnelleren Trainingsschritten führt.
+    
+    \item \textbf{Nichtlinearität:} Obwohl sie in einem Bereich linear ist, ist die ReLU-Funktion insgesamt nichtlinear. Dies ermöglicht dem Netzwerk, komplexe Muster zu erfassen, während gleichzeitig das Vanishing-Gradient-Problem gemildert wird.
+\end{itemize}
+
+
+\subsubsection{Überwachung und manuelle Anpassung}
+
+Es ist oft notwendig, das Verhalten des Netzwerks während des Trainings zu überwachen. Wenn Anzeichen für verschwindende oder explodierende Gradienten festgestellt werden, kann eine manuelle Anpassung der Architektur oder der Hyperparameter erforderlich sein.
+
+\subsubsection{Anpassungen im aktuellen Ansatz}
+
+In der vorliegenden Arbeit wurden bereits mehrere spezifische Methoden zur Bewältigung des Problems implementiert:
+
+
+\begin{itemize}
+    \item \textbf{Normalisierung des Rewards:} Der Reward-Wert \( R \) wurde angepasst:
+    \[
+    R_{\text{norm}} = \frac{R - \text{min}(R)}{\text{max}(R) - \text{min}(R)}
+    \]
+    
+    \item \textbf{Normalisierung der Eingänge:} Die Eingangsdaten \( X \) wurden normalisiert:
+    \[
+    X_{\text{norm}} = \frac{X - \text{mean}(X)}{\text{std}(X)}
+    \]
+    
+    \item \textbf{Verwendung von tanh:} Die Aktivierungsfunktion \(\tanh\) wurde verwendet, um die Ausgabe \( f(x) \) zu normalisieren:
+    \[
+    f(x) = \tanh(x)
+    \]
+
+    \item \textbf{ReLU-Aktivierungsfunktion}: Die Verwendung der ReLU-Aktivierungsfunktion (Rectified Linear Unit) kann dazu beitragen, das Vanishing-Gradient-Problem zu mildern und die Netzwerkeffizienz zu verbessern, was indirekt Overfitting verhindern kann.
+\end{itemize}
+

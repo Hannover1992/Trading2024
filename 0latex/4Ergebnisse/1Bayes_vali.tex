@@ -1,0 +1,23 @@
+
+% \input{3Experiment/2Experiment/1Random}
+% \input{3Experiment/2Experiment/2Actor}
+
+\label{sec:Results_Presentation}
+
+Nach der erfolgreichen  Realisierung einer robusten Actor-Critic-Architektur haben wir eine entscheidende Phase erreicht: die Präsentation unserer Forschungsergebnisse. Anfänglich zeigte unser Modell vielversprechende Resultate mit scheinbarer Leichtigkeit. Allerdings stellten wir fest, dass eine weitere Verfeinerung notwendig war, um exzellente Leistungswerte zu erzielen. Diese kontinuierliche Verbesserung war besonders im Feintuning-Prozess bemerkbar, wenngleich die Qualität der Ergebnisse anfangs unsicher war.
+
+Um die Validität unserer Ergebnisse zu überprüfen, griffen wir auf Bayesian Optimization zurück, eine Technik, die für ihre herausragende Fähigkeit zur Auffindung optimaler Parameterwerte bekannt ist. Das Modell wurde speziell so konzipiert, dass es mit dieser Technik kompatibel ist.
+
+Mit Bayesian Optimization konnten wir gezielt spezifischen Degradationszustand auswählen und diesen als Benchmark heranziehen. Diese gezielte Auswahl ermöglichte es uns, die Effektivität und Genauigkeit der Architektur zu bestätigen.
+
+Abbildung \ref{fig:Bayesian_PID_Optimization} zeigt eine dreidimensionale Visualisierung verschiedener PID-Konfigurationen, die durch Bayesian Optimization ermittelt wurden. Die verschiedenen Farbnuancen korrespondieren mit den erzielten Rewards, wobei dunklere Farbtöne höhere Belohnungen symbolisieren. Die systematische und gleichmäßige Abtastung des Parameterraums durch Bayesian Optimization ist deutlich zu erkennen. Die Intensivierung der Suche in Bereichen, die vielversprechende Werte zeigten, verdeutlicht die zielgerichtete und effiziente Natur des Optimierungsprozesses.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{4Ergebnisse/0Bayes_ergebnisse.png}
+\caption{Dreidimensionale Darstellung der Bayesian Optimization von PID-Controller-Parametern.}
+\label{fig:Bayesian_PID_Optimization}
+\end{figure}
+
+Die Präzision dieser Optimierungsmethode ermöglichte es uns, einen Referenzwert für die Regelungsleistung zu etablieren. Dieser Wert wurde anschließend als Benchmark für das manuelle Feintuning der Hyperparameter unserer Regelung verwendet.
+

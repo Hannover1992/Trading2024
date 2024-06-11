@@ -1,0 +1,39 @@
+\section{Überblick über den Aufbau und Datenfluss}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.72\textwidth]{3Experiment/2Experiment/0Experiment_Grob.png}
+\caption{Detaillierte Darstellung des Systems zur Datensammlung für das Training des neuronalen Netzes.}
+\label{fig:data_collection_system}
+\end{figure}
+
+
+\paragraph{Einleitung}
+Dieser Abschnitt gewährt einen Überblick über die Struktur und den Datenfluss innerhalb Modueln\ref{fig:data_collection_system} Die detaillierten theoretischen Grundlagen der Systemkomponenten wurden im Grundlagenteil dieser Arbeit ausführlich behandelt. An dieser Stelle werden die Funktionen und Interaktionen der einzelnen Module im Kontext der Datenerfassung für das Training des neuronalen Netzes dargestellt.
+
+
+\paragraph{Datenfluss im Reinforcement Learning System}
+Im Zentrum des Datenflusses unseres Systems steht die Befüllung des Replay Buffers \ref{fig:replay_buffer}\ref{sec:Replay Buffers} mit wertvollen Informationen für das Training des Agenten. Diese Informationen bestehen aus den Zuständen der Schaltung, den getroffenen Aktionen des Agenten und den daraus resultierenden Belohnungen. 
+
+\input{3Experiment/2Experiment/0ZeitlicheDimension}
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.4\textwidth]{3Experiment/2Experiment/0Replay_Buffer_short.png}
+\caption{Schematische Darstellung des Replay Buffers, der als Datenspeicher für das Reinforcement Learning System dient. Er zeichnet die Sequenz der erlebten Zustände \( s \), Aktionen \( a \), Belohnungen \( r \) und nachfolgenden Zustände \( s' \) auf, welche für die stetige Anpassung und Verbesserung des Agenten verwendet werden.}
+\label{fig:replay_buffer}
+\end{figure}
+
+\input{3Experiment/2Experiment/1Random}
+\input{3Experiment/2Experiment/2Actor}
+
+\input{3Experiment/2Experiment/3PID}
+\input{3Experiment/2Experiment/4Reward}
+\input{3Experiment/2Experiment/5ReinforcementLearning}
+
+% \input{3Experiment/2Experiment/1Replay_Buffer.tex}
+
+
+
+
