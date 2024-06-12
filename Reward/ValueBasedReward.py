@@ -53,8 +53,7 @@ class ValueBasedReward(IRewardCalculator):
         difference_to_best_scenario = gain - best_scenario_gain 
 
         # Normalisierte Belohnung berechnen: Verhältnis der Differenz zum vorherigen Barwert
-        reward = difference_to_best_scenario / previous_value
-        reward = difference_to_best_scenario /current_value
+        reward = difference_to_best_scenario / current_value
 
         return reward
 
