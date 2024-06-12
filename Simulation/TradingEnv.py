@@ -52,15 +52,15 @@ class TradingEnv():
 
 
 
-        if action >= 0.0:
+        if action >= 0.5:
             if(self.cash >= 0.0):
-                amount_to_invest = self.cash * action
+                amount_to_invest = self.cash * ((action - 0.5)/2)
                 shares_to_buy = amount_to_invest / previous_price
                 self.cash -= amount_to_invest
                 self.shares += shares_to_buy * TRANSACTION_PENELTY
-        else:
+        elif action <= -0.5:
             if(self.shares > 0.0):
-                shares_to_sell = self.shares * abs(action)
+                shares_to_sell = self.shares * abs((action + -0.5)/2)
                 amount_received = shares_to_sell * previous_price
                 self.shares -= shares_to_sell
                 if(self.shares < 0.0):

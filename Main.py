@@ -53,7 +53,7 @@ def run_training_process(instance_id, learning_rate, noise):
     print(f"Training instance {instance_id} completed")
 
 def trainMultiDDPG():
-    num_processes = 22
+    num_processes = 10
     processes = []
 
     for i in range(num_processes):
