@@ -1,5 +1,6 @@
 from Reward.IRewardCalculator import IRewardCalculator
 import unittest
+from Config import TRANSACTION_PENELTY
 
 class ValueBasedReward(IRewardCalculator):
     def calculate_reward(self, previous_state, current_state,balance_ratio):
@@ -19,7 +20,7 @@ class ValueBasedReward(IRewardCalculator):
         return reward
 
 
-    def new_calculate_reward(self, previous_price, current_price, combined_value_in_cash, previous_combined_value_in_cash):
+    def new_calculate_reward(self, previous_price, current_price, combined_value_in_cash, previous_combined_value_in_cash, previous_shares, previous_cash):
         # Aktueller und vorheriger kombinierter Barwert
         current_value = combined_value_in_cash
         previous_value = previous_combined_value_in_cash
@@ -29,20 +30,24 @@ class ValueBasedReward(IRewardCalculator):
 
         # Preisänderung der Aktie berechnen
         price_change = current_price - previous_price
+        best_scenario_gain = 0
 
-        # Hypothetischer Barwert, wenn alles beim vorherigen Preis verkauft worden wäre
-        cash_if_sold_all = previous_value
-
-        # Hypothetischer Aktienwert, wenn das gesamte Cash beim vorherigen Preis investiert worden wäre
-        stocks_value_if_invested_all = previous_value * (current_price / previous_price)
 
         # Bestes hypothetisches Szenario basierend auf der Preisänderung
         if price_change >= 0:
+            # Hypothetischer Aktienwert, wenn das gesamte Cash beim vorherigen Preis investiert worden wäre
+            real_cash_value = previous_cash * TRANSACTION_PENELTY
+            shares_buyed = real_cash_value / previous_price
+            cumulative_shares = shares_buyed + previous_shares
+            stocks_value_if_invested_all = cumulative_shares * current_price * TRANSACTION_PENELTY
             # Preis gestiegen, bestes Szenario ist vollständiges Investieren in Aktien
             best_scenario_gain = stocks_value_if_invested_all - previous_value
-        else:
+
+        if price_change < 0:
+            # Hypothetischer Barwert, wenn alles beim vorherigen Preis verkauft worden wäre
+            # best_scenario_gain = previous_cash + previous_shares * TRANSACTION_PENELTY * previous_price
             # Preis gefallen, bestes Szenario ist Halten des Cash
-            best_scenario_gain = cash_if_sold_all - previous_value
+            best_scenario_gain = 0
 
         # Differenz zum besten hypothetischen Szenario berechnen
         difference_to_best_scenario = gain - best_scenario_gain 

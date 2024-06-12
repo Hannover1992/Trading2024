@@ -29,12 +29,12 @@ class State:
     def init_state_with_constant_price(self, price):
         self.stack = deque([price] * self.size, maxlen=self.size)
 
-    def calculate_balance_ratio(self, cash, shares, current_price):
-        total_value = cash + shares * current_price
+    def calculate_balance_ratio(self, cash, shares, price):
+        total_value = cash + shares * price
         if total_value == 0:
             return 0  # If total value is zero, return a neutral ratio
 
-        stock_value = shares * current_price
+        stock_value = shares * price
         ratio = (2 * stock_value / total_value) - 1
 
         return ratio

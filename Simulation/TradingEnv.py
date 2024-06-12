@@ -9,7 +9,7 @@ from State.State import State
 from Reward.ValueBasedReward import ValueBasedReward
 from Reward.StateBasedReward import StateBasedReward 
 
-from Config import WINDOW_SIZE
+from Config import WINDOW_SIZE, TRANSACTION_PENELTY
 
 class TradingEnv():
     def __init__(self):
@@ -47,13 +47,17 @@ class TradingEnv():
         price = self.data['Preis'].iloc[self.current_step]
         previous_price = self.data['Preis'].iloc[self.current_step - 1]
 
+        previous_shares = self.shares
+        previous_cash = self.cash
+
+
 
         if action >= 0.0:
             if(self.cash >= 0.0):
                 amount_to_invest = self.cash * action
                 shares_to_buy = amount_to_invest / previous_price
                 self.cash -= amount_to_invest
-                self.shares += shares_to_buy * 0.995
+                self.shares += shares_to_buy * TRANSACTION_PENELTY
         else:
             if(self.shares > 0.0):
                 shares_to_sell = self.shares * abs(action)
@@ -61,7 +65,8 @@ class TradingEnv():
                 self.shares -= shares_to_sell
                 if(self.shares < 0.0):
                     print("Shares are negative")
-                self.cash += amount_received * 0.995
+                self.cash += amount_received * TRANSACTION_PENELTY
+
 
         new_balance_ratio = self.state.calculate_balance_ratio(self.cash, self.shares, price)
         self.previous_combined_value_in_cash = self.combined_value_in_cash
@@ -69,8 +74,9 @@ class TradingEnv():
         self.state.push(price, new_balance_ratio)
         new_state = self.state.get_state()
 
-        self.combined_value_in_cash = self.cash + self.shares * price
-        reward = self.reward_calculator.new_calculate_reward(previous_price, price,  self.combined_value_in_cash, self.previous_combined_value_in_cash)
+        self.combined_value_in_cash = self.cash + self.shares * price * TRANSACTION_PENELTY
+
+        reward = self.reward_calculator.new_calculate_reward(previous_price, price,  self.combined_value_in_cash, self.previous_combined_value_in_cash, previous_shares, previous_cash)
 
         self.current_step += 1
         done = self.current_step >= len(self.data)
