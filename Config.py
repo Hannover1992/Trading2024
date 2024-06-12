@@ -17,11 +17,11 @@ TRANSACTION_PENELTY = 0.995
 
 NOISE = 0.7
 
-NOISE_MIN = 0.1
+NOISE_MIN = 0.6
 NOISE_MAX = 0.7
 
-ALPHA_MIN = 0.00001
-ALPHA_MAX = 0.0002
+ALPHA_MIN = 0.000001
+ALPHA_MAX = 0.1
 
 class Configuration:
     def __init__(self, learning_rate=ALPHA, noise=NOISE):
