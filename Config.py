@@ -4,7 +4,7 @@ import random
 ITERATION = 2000
 ALPHA = 0.01
 BETA = ALPHA * 2
-TAU = ALPHA * 5
+TAU = ALPHA * 50
 FC1 = 150
 FC2 = 50
 NR_OF_LAYERS = 2
@@ -16,11 +16,11 @@ WINDOW_SIZE = 3
 
 NOISE = 0.7
 
-NOISE_MIN = 0.6
+NOISE_MIN = 0.1
 NOISE_MAX = 0.7
 
-ALPHA_MIN = 0.0001
-ALPHA_MAX = 0.005
+ALPHA_MIN = 0.00001
+ALPHA_MAX = 0.0002
 
 class Configuration:
     def __init__(self, learning_rate=ALPHA, noise=NOISE):

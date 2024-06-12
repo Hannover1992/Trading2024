@@ -68,7 +68,7 @@ class MockSyntheticSinusData(IDataSource):
 
         price = linear_trend + sinusoidal + noise + c
         price = np.maximum(price, 50)
-        # self.show_plot(t, price)
+        self.show_plot(t, price)
         return pd.DataFrame({'Tage': t, 'Preis': price})
 
     def plot_synthetic_data(self, data: pd.DataFrame):
