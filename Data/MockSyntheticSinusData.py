@@ -48,18 +48,18 @@ class MockSyntheticSinusData(IDataSource):
     def generate_synthetic_data(self) -> pd.DataFrame:
 
         np.random.seed(123)
-        days = 20
-        start_price = 1200
-        end_price = 500
+        days = 100
+        start_price = 240
+        end_price = 120
         noise_level = 50  # Significantly increased noise
 
         t = np.arange(0, days)
         linear_trend = np.linspace(start_price, end_price, days)
-        c = 1000
+        c = 150
 
         # Multiple sinusoidal patterns with varying parameters
         sinusoidal = sum(
-            np.random.randint(100, 990) * np.sin(2 * np.pi * np.random.uniform(1/50, 1/3) * t)
+            np.random.randint(50, 100) * np.sin(2 * np.pi * np.random.uniform(1/50, 1/3) * t)
             for _ in range(10)
         )
 

@@ -29,8 +29,6 @@ def train_ddpg(env, agent, num_episodes, instance_id):
                 #not a number
             cash = env.combined_value_in_cash
             #ich mochte hier verlgiechen ob das cash -57.98... ist es hat mehrer float ich verlgiehc nur die ersten 2 stellen
-            if round(cash, 2) == -57.98:
-                print(f"Episode {episode + 1}/{num_episodes}, Reward: {episode_reward} Cash: {cash}")
 
             agent.decay_noise(episode)
 
@@ -53,7 +51,7 @@ def run_training_process(instance_id, learning_rate, noise):
     print(f"Training instance {instance_id} completed")
 
 def trainMultiDDPG():
-    num_processes = 22
+    num_processes = 20
     processes = []
 
     for i in range(num_processes):

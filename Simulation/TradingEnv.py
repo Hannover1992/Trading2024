@@ -9,13 +9,13 @@ from State.State import State
 from Reward.ValueBasedReward import ValueBasedReward
 from Reward.StateBasedReward import StateBasedReward 
 
-from Config import WINDOW_SIZE, TRANSACTION_PENELTY
+from Config import WINDOW_SIZE, TRANSACTION_PENELTY, CASH
 
 class TradingEnv():
     def __init__(self):
         super(TradingEnv, self).__init__()
 
-        self.initial_balance = 10000
+        self.initial_balance = CASH
         self.cash = self.initial_balance
         self.combined_value_in_cash = self.initial_balance
         self.previous_combined_value_in_cash = self.initial_balance
