@@ -21,7 +21,11 @@ class BitcoinData(IDataSource):
         # Assuming '24h High (USD)' is treated as the closing price
         # Change '24h High (USD)' to your actual closing price column if different
         t = df.index
+        #t from 1500 to 2500
+        t = np.arange(1500, 2500)
         price = df['24h High (USD)'].values
+        #price from 1500 to 2500
+        price = price[1500:2500]
         # df = df[['Date', '24h High (USD)']]  
         # df.columns = ['Days', 'Price']  # Renaming columns to 'Days' and 'Price'
         # self.show_plot(t, price)
@@ -42,8 +46,10 @@ class MockSyntheticSinusData(IDataSource):
         return self.generate_synthetic_data()
 
     def generate_synthetic_data(self) -> pd.DataFrame:
-        days = 16
-        start_price = 500
+
+        np.random.seed(123)
+        days = 20
+        start_price = 1200
         end_price = 500
         noise_level = 50  # Significantly increased noise
 
@@ -53,7 +59,7 @@ class MockSyntheticSinusData(IDataSource):
 
         # Multiple sinusoidal patterns with varying parameters
         sinusoidal = sum(
-            np.random.randint(100, 300) * np.sin(2 * np.pi * np.random.uniform(1/50, 1/20) * t)
+            np.random.randint(100, 990) * np.sin(2 * np.pi * np.random.uniform(1/50, 1/3) * t)
             for _ in range(10)
         )
 

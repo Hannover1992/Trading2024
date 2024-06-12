@@ -47,7 +47,7 @@ class ActorNetwork(tf.keras.Model):
         super(ActorNetwork, self).__init__()
         self.nr_of_layers = nr_of_layers
 
-        self.lstm = LSTM(64, input_shape=(WINDOW_SIZE, 1))  # Specifying input shape
+        self.lstm = LSTM(fc1_dims, input_shape=(WINDOW_SIZE, 1))  # Specifying input shape
         self.dense_layers = []
         for i in range(nr_of_layers):
             if i % 2 == 0:  # Even index layers
