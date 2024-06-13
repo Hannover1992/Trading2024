@@ -5,6 +5,7 @@ from tensorflow.keras.optimizers import Adam
 from Agent.buffer import ReplayBuffer
 from Agent.networks import ActorNetwork, CriticNetwork
 from State.Signal import Signal
+from Config import WINDOW_SIZE
 
 class Agent:
     def __init__(self, input_dims, env, config):
@@ -39,11 +40,22 @@ class Agent:
                                            unique_name=config.unique_name,
                                            fc1_dims=config.fc1, fc2_dims=config.fc2)
 
+        state_dim = (None, WINDOW_SIZE, 1)  # 'None' allows for variable batch size
+        action_dim = (None, 1)
+
+        self.actor.build(input_shape=state_dim)
+        self.critic.build(input_shape=[state_dim, action_dim])  # Critic might have a combined input of state and action
+
+        self.actor.summary()
+        self.critic.summary()
+
         self.actor.compile(optimizer=Adam(learning_rate=config.alpha))
         self.critic.compile(optimizer=Adam(learning_rate=config.beta))
         self.target_actor.compile(optimizer=Adam(learning_rate=config.alpha))
         self.target_critic.compile(optimizer=Adam(learning_rate=config.beta))
         self.update_network_parameters(tau=1)
+
+
 
     def update_network_parameters(self, tau=None):
         if tau is None:

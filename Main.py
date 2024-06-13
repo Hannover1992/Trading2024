@@ -6,6 +6,7 @@ from Agent.ddpg_tf2 import Agent
 from Config import Configuration, ALPHA_MIN, ALPHA_MAX, NOISE_MIN, NOISE_MAX
 import random
 import multiprocessing
+import tensorflow as tf
 
 def train_ddpg(env, agent, num_episodes, instance_id):
     # Open the file in append mode
@@ -38,6 +39,7 @@ def train_ddpg(env, agent, num_episodes, instance_id):
                 file.write(f"Episode {episode + 1}/{num_episodes}, Reward: {episode_reward} Cash: {cash} \n")
 
 def run_training_process(instance_id, learning_rate, noise):
+    setup_gpu()
     # Environment setup
     env = TradingEnv()
 
@@ -50,27 +52,45 @@ def run_training_process(instance_id, learning_rate, noise):
 
     print(f"Training instance {instance_id} completed")
 
+def setup_gpu():
+    gpus = tf.config.experimental.list_physical_devices('GPU')
+    if gpus:
+        try:
+            # Set the GPU visible to TensorFlow and enable memory growth
+            tf.config.experimental.set_visible_devices(gpus[0], 'GPU')
+            tf.config.experimental.set_memory_growth(gpus[0], True)
+        except RuntimeError as e:
+            print("RuntimeError:", e)
+
+def setup_cpu():
+    # Set TensorFlow to only use the CPU
+    try:
+        # Get a list of all GPUs
+        gpus = tf.config.experimental.list_physical_devices('GPU')
+        # Set all GPUs as not visible
+        if gpus:
+            for gpu in gpus:
+                tf.config.experimental.set_visible_devices([], 'GPU')
+        print("Using CPU only.")
+    except RuntimeError as e:
+        print("Runtime error:", e)
+
 def trainMultiDDPG():
-    num_processes = 20
+    num_processes = 20  # Be cautious with this number based on available GPUs
     processes = []
 
     for i in range(num_processes):
-        #abtasten geliche abstand zwiche nalpah mi nund alph max 
         alpha = ALPHA_MIN + (ALPHA_MAX - ALPHA_MIN) / num_processes * i
         noise = NOISE_MIN + (NOISE_MAX - NOISE_MIN) / num_processes * i
-        # learning_rate = random.uniform(ALPHA_MIN, ALPHA_MAX)
-        learning_rate = alpha
-        print(learning_rate)
 
-        process = multiprocessing.Process(target=run_training_process, args=(i, learning_rate, noise))
+        process = multiprocessing.Process(target=run_training_process, args=(i, alpha, noise))
         processes.append(process)
         process.start()
 
     for process in processes:
         process.join()
 
-
-
 if __name__ == "__main__":
+    # setup_cpu()
     run_training_process(0, 0.01, 0.7)
-    # trainMultiDDPG()
+    trainMultiDDPG()

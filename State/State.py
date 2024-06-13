@@ -4,19 +4,21 @@ import numpy as np
 
 class State:
     def __init__(self,  data, size=WINDOW_SIZE,):
-        price = data['Preis'].iloc[0]
+        # price = data['Preis'].iloc[0]
         self.min = data['Preis'].min()
         self.max = data['Preis'].max()
         self.size = size
-        price_normalized =  self.normalize_state(price)
+        # price_normalized =  self.normalize_state(price)
         #ich mocht an der ersten stelle eine -1 haben
-        self.stack = deque([price_normalized] * size, maxlen=size)
+        self.stack = deque([0.0] * size, maxlen=size)
         self.stack[0] = -1.0
 
 
     def push(self, price, balance):
-        price = self.normalize_state(price)
-        self.stack.append(price)
+        price_normalized = self.normalize_state(price)
+        previous_price = self.stack[-1]
+        difference = price_normalized - previous_price
+        self.stack.append(difference)
         self.stack[0] = balance
 
     def get_state(self):
