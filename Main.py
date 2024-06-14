@@ -7,6 +7,7 @@ from Config import Configuration, ALPHA_MIN, ALPHA_MAX, NOISE_MIN, NOISE_MAX, NU
 import random
 import multiprocessing
 import tensorflow as tf
+# from AnimateProgress import animated_plot
 
 from multiprocessing import Semaphore
 
@@ -91,10 +92,10 @@ def setup_cpu():
         print("Runtime error:", e)
 
 def trainMultiDDPG():
-    num_processes = NUMBER_OF_PROC  # Be cautious with this number based on available GPUs
+    num_processes = NUMBER_OF_PROC  # Sei vorsichtig mit dieser Zahl, basierend auf verfügbaren GPUs
     processes = []
 
-    for i in range(num_processes):
+    for i in range(1, num_processes):  # Beginne bei 1, damit der 0-te Prozess für die Animation verwendet werden kann
         alpha = ALPHA_MIN + (ALPHA_MAX - ALPHA_MIN) / num_processes * i
         noise = NOISE_MIN + (NOISE_MAX - NOISE_MIN) / num_processes * i
 
@@ -104,6 +105,12 @@ def trainMultiDDPG():
 
     for process in processes:
         process.join()
+
+    # if num_processes > 0:  # Falls NUMBER_OF_PROC mindestens 1 ist
+    #     # Starte den 0-ten Prozess als dedizierten Animationsprozess
+    #     animation_process = multiprocessing.Process(target=animated_plot)
+    #     animation_process.start()
+    #     animation_process.join()
 
 if __name__ == "__main__":
     # setup_cpu()

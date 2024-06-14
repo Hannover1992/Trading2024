@@ -1,4 +1,4 @@
-import pandas as pd
+import pandas as pd 
 import os
 import re
 import seaborn as sns
@@ -68,5 +68,5 @@ def animated_plot():
     ani = FuncAnimation(fig, update_plot, interval=30000)  # Update every 30 seconds
     plt.show()
 
-
 animated_plot()
+
