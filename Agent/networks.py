@@ -42,7 +42,7 @@ class CriticNetwork(tf.keras.Model):
         return q
 
 class ActorNetwork(tf.keras.Model):
-    def __init__(self, n_actions, nr_of_layers=2, fc1_dims=512, fc2_dims=256,
+    def __init__(self, n_actions, nr_of_layers=NR_OF_LAYERS, fc1_dims=512, fc2_dims=256,
                  name='actor', unique_name='hydra', chkpt_dir='tmp/ddpg'):
         super(ActorNetwork, self).__init__()
         self.nr_of_layers = nr_of_layers

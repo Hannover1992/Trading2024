@@ -3,10 +3,22 @@ from Agent.ddpg_tf2 import Agent
 from Config import EXPLOITAION, NOISE_MIN, Configuration
 from Simulation.TradingEnv import TradingEnv  # Ensure this path is correct
 from Agent.ddpg_tf2 import Agent
-from Config import Configuration, ALPHA_MIN, ALPHA_MAX, NOISE_MIN, NOISE_MAX
+from Config import Configuration, ALPHA_MIN, ALPHA_MAX, NOISE_MIN, NOISE_MAX, NUMBER_OF_PROC
 import random
 import multiprocessing
 import tensorflow as tf
+
+from multiprocessing import Semaphore
+
+sem = Semaphore()
+
+import fcntl
+
+def safe_write(file, data):
+    with open(file, 'a') as f:
+        fcntl.flock(f, fcntl.LOCK_EX)  # Exklusiver Lock
+        f.write(data)
+        fcntl.flock(f, fcntl.LOCK_UN)  # Freigeben des Locks
 
 def train_ddpg(env, agent, num_episodes, instance_id):
     # Open the file in append mode
@@ -36,7 +48,10 @@ def train_ddpg(env, agent, num_episodes, instance_id):
             if episode % EXPLOITAION == 0:
                 print(f"Evaluation")
                 print(f"Episode {episode + 1}/{num_episodes}, Reward: {episode_reward} Cash: {cash}")
-                file.write(f"Episode {episode + 1}/{num_episodes}, Reward: {episode_reward} Cash: {cash} \n")
+                sem.acquire()  # Semaphor vor dem Schreiben anfordern
+                # file.write(f"Episode {episode + 1}/{num_episodes}, Reward: {episode_reward} Cash: {cash} \n")
+                safe_write(f"./Ergebnis/ergebnis_{agent.name}.txt", f"Episode {episode + 1}/{num_episodes}, Reward: {episode_reward} Cash: {cash} \n")
+                sem.release()  # Semaphor nach dem Schreiben freigeben
 
 def run_training_process(instance_id, learning_rate, noise):
     setup_gpu()
@@ -76,7 +91,7 @@ def setup_cpu():
         print("Runtime error:", e)
 
 def trainMultiDDPG():
-    num_processes = 20  # Be cautious with this number based on available GPUs
+    num_processes = NUMBER_OF_PROC  # Be cautious with this number based on available GPUs
     processes = []
 
     for i in range(num_processes):
@@ -92,5 +107,5 @@ def trainMultiDDPG():
 
 if __name__ == "__main__":
     # setup_cpu()
-    run_training_process(0, 0.01, 0.7)
+    # run_training_process(0, 0.01, 0.7)
     trainMultiDDPG()
