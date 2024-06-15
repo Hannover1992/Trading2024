@@ -2,42 +2,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from abc import ABC, abstractmethod
-
-class IDataSource(ABC):
-    
-    @abstractmethod
-    def get_data(self) -> pd.DataFrame:
-        pass
-
-class BitcoinData(IDataSource):
-    def __init__(self, file_path):
-        self.file_path = file_path
-
-    def get_data(self) -> pd.DataFrame:
-        # Load the Bitcoin data from the specified CSV file
-        df = pd.read_csv(self.file_path)
-        
-        # Assuming '24h High (USD)' is treated as the closing price
-        # Change '24h High (USD)' to your actual closing price column if different
-        t = df.index
-        #t from 1500 to 2500
-        t = np.arange(1500, 2500)
-        price = df['24h High (USD)'].values
-        #price from 1500 to 2500
-        price = price[1500:2500]
-        # df = df[['Date', '24h High (USD)']]  
-        # df.columns = ['Days', 'Price']  # Renaming columns to 'Days' and 'Price'
-        # self.show_plot(t, price)
-        return pd.DataFrame({'Tage': t, 'Preis': price})
-
-    def show_plot(self, x, y):
-        sns.set(style="whitegrid")
-        sns.lineplot(x=x, y=y)
-        plt.title("Synthetische Preisdaten (Sinus)")
-        plt.xlabel("Tage")
-        plt.ylabel("Preis")
-        plt.show()
+from Data.IDataSource import IDataSource
 
 class MockSyntheticSinusData(IDataSource):
 
@@ -68,7 +33,7 @@ class MockSyntheticSinusData(IDataSource):
 
         price = linear_trend + sinusoidal + noise + c
         price = np.maximum(price, 50)
-        # self.show_plot(t, price)
+        self.show_plot(t, price)
         return pd.DataFrame({'Tage': t, 'Preis': price})
 
     def plot_synthetic_data(self, data: pd.DataFrame):

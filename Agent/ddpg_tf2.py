@@ -43,16 +43,17 @@ class Agent:
         state_dim = (None, WINDOW_SIZE, 1)  # 'None' allows for variable batch size
         action_dim = (None, 1)
 
-        self.actor.build(input_shape=state_dim)
-        self.critic.build(input_shape=[state_dim, action_dim])  # Critic might have a combined input of state and action
 
-        self.actor.summary()
-        self.critic.summary()
 
         self.actor.compile(optimizer=Adam(learning_rate=config.alpha))
         self.critic.compile(optimizer=Adam(learning_rate=config.beta))
+
         self.target_actor.compile(optimizer=Adam(learning_rate=config.alpha))
         self.target_critic.compile(optimizer=Adam(learning_rate=config.beta))
+
+        # self.actor.summary()
+        # self.critic.summary()
+
         self.update_network_parameters(tau=1)
 
 

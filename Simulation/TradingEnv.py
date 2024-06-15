@@ -4,7 +4,6 @@ import numpy as np
 from numpy._typing import _16Bit
 from State.Signal import Signal
 from Data.MockSyntheticSinusData import MockSyntheticSinusData
-from Data.MockSyntheticSinusData import BitcoinData
 from State.State import State
 from Reward.ValueBasedReward import ValueBasedReward
 from Reward.StateBasedReward import StateBasedReward 
@@ -22,7 +21,6 @@ class TradingEnv():
 
         self.shares = 0
         self.data = MockSyntheticSinusData().get_data()
-        # self.data = BitcoinData('./Data/bitcoin.csv').get_data()
         self.current_step = 1
         self.state = State(self.data)
         self.reward_calculator = ValueBasedReward()
