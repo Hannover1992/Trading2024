@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from Data.IDataSource import IDataSource
+from Config import SYNTHETIC_DATA_LENGTH
 
 class MockSyntheticSinusData(IDataSource):
 
@@ -13,7 +14,7 @@ class MockSyntheticSinusData(IDataSource):
     def generate_synthetic_data(self) -> pd.DataFrame:
 
         np.random.seed(123)
-        days = 100
+        days = SYNTHETIC_DATA_LENGTH
         start_price = 240
         end_price = 120
         noise_level = 50  # Significantly increased noise
@@ -33,7 +34,7 @@ class MockSyntheticSinusData(IDataSource):
 
         price = linear_trend + sinusoidal + noise + c
         price = np.maximum(price, 50)
-        self.show_plot(t, price)
+        # self.show_plot(t, price)
         return pd.DataFrame({'Tage': t, 'Preis': price})
 
     def plot_synthetic_data(self, data: pd.DataFrame):

@@ -35,7 +35,7 @@ def train_ddpg(env, agent, num_episodes, instance_id):
                 else:
                     action = agent.choose_action_train(state)
                 new_state, reward, done, _ = env.step(action)
-                if episode % EXPLOITAION == 0:
+                if episode % EXPLOITAION != 0:
                     agent.remember(state, action, reward, new_state, done)
                     agent.learn()
                 state = new_state
@@ -55,8 +55,8 @@ def train_ddpg(env, agent, num_episodes, instance_id):
                 sem.release()  # Semaphor nach dem Schreiben freigeben
 
 def run_training_process(instance_id, learning_rate, noise):
-    # setup_gpu()
-    setup_cpu()
+    setup_gpu()
+    # setup_cpu()
     # Environment setup
     env = TradingEnv()
 
@@ -115,5 +115,5 @@ def trainMultiDDPG():
 
 if __name__ == "__main__":
     # setup_cpu()
-    run_training_process(0, 0.01, 0.7)
-    # trainMultiDDPG()
+    # run_training_process(0, 0.01, 0.7)
+    trainMultiDDPG()

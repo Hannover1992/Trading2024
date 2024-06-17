@@ -16,10 +16,12 @@ class BitcoinData(IDataSource):
         # Change '24h High (USD)' to your actual closing price column if different
         t = df.index
         #t from 1500 to 2500
-        t = np.arange(1500, 2500)
+        start_index = 1700
+        end_index = 1900
+        t = np.arange(start_index, end_index)
         price = df['24h High (USD)'].values
         #price from 1500 to 2500
-        price = price[1500:2500]
+        price = price[start_index:end_index]
         # df = df[['Date', '24h High (USD)']]  
         # df.columns = ['Days', 'Price']  # Renaming columns to 'Days' and 'Price'
         # self.show_plot(t, price)
