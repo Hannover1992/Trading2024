@@ -24,7 +24,7 @@ class BitcoinData(IDataSource):
         price = price[start_index:end_index]
         # df = df[['Date', '24h High (USD)']]  
         # df.columns = ['Days', 'Price']  # Renaming columns to 'Days' and 'Price'
-        # self.show_plot(t, price)
+        self.show_plot(t, price)
         return pd.DataFrame({'Tage': t, 'Preis': price})
 
     def show_plot(self, x, y):
