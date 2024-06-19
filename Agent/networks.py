@@ -3,6 +3,7 @@ import keras
 import tensorflow as tf
 from tensorflow.keras.layers import Dense, Input, LSTM, Concatenate, Conv1D
 from tensorflow.keras.models import Model
+import math as m
 
 from Config import WINDOW_SIZE, NR_OF_LAYERS, FC1_DIMS_LSTM, FILTER_KERNEL
 
@@ -12,7 +13,11 @@ class ActorNetwork(Model):
         self.nr_of_layers = nr_of_layers
 
         # Generate convolutional layers dynamically based on window size
-        self.conv_layers = self.create_conv_layers(window_size, FC1_DIMS_LSTM)
+        self.conv_layers = self.create_conv_layers(1024, 64, 0)
+        self.conv_layers2 = self.create_conv_layers(512, 64)
+        self.conv_layers2 = self.create_conv_layers(256, 64)
+        self.conv_layers2 = self.create_conv_layers(128, 64)
+        self.conv_layers2 = self.create_conv_layers(64, 64)
         
         # LSTM layer
         self.lstm = LSTM(FC1_DIMS_LSTM, return_sequences=False)
@@ -28,9 +33,11 @@ class ActorNetwork(Model):
         os.makedirs(self.checkpoint_dir, exist_ok=True)
         self.checkpoint_file = os.path.join(self.checkpoint_dir, f"{self.model_name}_ddpg.h5")
 
-    def create_conv_layers(self, window_size, target_size):
+    def create_conv_layers(self, window_size, target_size, index):
+        conv_nr_of_layers = m.log2(window_size) - m.log2(target_size)
         layers = []
-        while window_size > target_size:
+        window_size = window_size // 2^index
+        for i in range(int(conv_nr_of_layers)):
             kernel_size = window_size // 2 + 1
             layers.append(Conv1D(filters=FILTER_KERNEL, kernel_size=kernel_size, strides=1, padding='valid', activation='relu', input_shape=(window_size, 1)))
             window_size = window_size // 2
@@ -40,7 +47,7 @@ class ActorNetwork(Model):
         x = inputs
         for conv in self.conv_layers:
             x = conv(x)
-        print(x.shape)
+        # print(x.shape)
         x = self.lstm(x)
         for layer in self.dense_layers:
             x = layer(x)

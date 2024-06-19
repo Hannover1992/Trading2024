@@ -21,8 +21,8 @@ class TradingEnv():
         self.previous_combined_value_in_cash = self.initial_balance
 
         self.shares = 0
-        # self.data = MockSyntheticSinusData().get_data()
-        self.data = BitcoinData("Data/BitcoinData.csv").get_data()
+        self.data = MockSyntheticSinusData().get_data()
+        # self.data = BitcoinData("Data/BitcoinData.csv").get_data()
         self.current_step = 1
         self.state = State(self.data)
         self.reward_calculator = ValueBasedReward()
@@ -52,7 +52,6 @@ class TradingEnv():
 
 
 
-        print(action)
         if action >= 0.5:
             if(self.cash >= 0.0):
                 amount_to_invest = self.cash * ((action - 0.5) * 1.98)
@@ -83,6 +82,7 @@ class TradingEnv():
         self.combined_value_in_cash = self.cash + self.shares * price * TRANSACTION_PENELTY
 
         reward = self.reward_calculator.new_calculate_reward(previous_price, price,  self.combined_value_in_cash, self.previous_combined_value_in_cash, previous_shares, previous_cash)
+        # print("Action: ", action, "Reward: ", reward, "Cash: ", self.cash, "Shares: ", self.shares, "Price: ", price)
 
         self.current_step += 1
         done = self.current_step >= len(self.data)

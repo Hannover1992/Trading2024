@@ -115,5 +115,5 @@ def trainMultiDDPG():
 
 if __name__ == "__main__":
     # setup_cpu()
-    run_training_process(0, 0.01, 0.7)
-    # trainMultiDDPG()
+    # run_training_process(0, 0.01, 0.7)
+    trainMultiDDPG()
