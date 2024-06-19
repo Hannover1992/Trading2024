@@ -1,15 +1,34 @@
 \chapter{Einleitung}
+
 \section{Hintergrund und Motivation}
-Die effiziente Übertragung elektrischer Energie von einer Quelle zu einem Verbraucher stellt eine entscheidende Herausforderung in der Elektrotechnik dar. Im Mittelpunkt stehen dabei Gleichspannungswandler (DC-DC Konverter), die in vielfältigen Anwendungen von Energieübertragungssystemen bis hin zu mobilen Geräten eine Rolle spielen \cite{wensdesign2022}.
+Die Anwendung von Reinforcement Learning (RL) im Bereich der Finanzmärkte hat in den letzten Jahren erheblich an Bedeutung gewonnen. Insbesondere die Entwicklung von Trading-Bots, die in der Lage sind, autonom Handelsentscheidungen zu treffen, bietet ein enormes Potenzial für die Verbesserung von Handelsstrategien und die Maximierung von Gewinnen. Die Effizienz und Effektivität dieser Systeme hängen jedoch maßgeblich von der Qualität der zugrunde liegenden Modelle und Algorithmen ab.
 
 \section{Problemstellung}
-Jedoch werden diese Systeme durch Degradationseffekte, besonders von Schlüsselkomponenten wie Kapazitäten, zunehmend beeinträchtigt. Solche Degradationen können die Lebensdauer und Effizienz von elektronischen Systemen nachhaltig schädigen und erfordern dringende wissenschaftliche Untersuchung \cite{jeong2023degradation}.
+Der Einsatz von RL in Handelsumgebungen bringt spezifische Herausforderungen mit sich. Ein wesentlicher Aspekt ist die Handhabung zeitsequenzieller Daten, bei denen die zeitliche Dimension eine entscheidende Rolle spielt. Ein weiterer zentraler Punkt ist die Gestaltung der Reward-Funktion, die den Lernprozess des Trading-Bots maßgeblich beeinflusst und dessen Fähigkeit zur Erzielung profitabler Handelsentscheidungen bestimmt.
 
 \section{Relevanz und Forschungslage}
-Erste Studien in diesem Bereich, wie die von Jeong et al. und Kulkarni et al., haben bereits die drastischen systemischen Auswirkungen solcher Degradationen demonstriert \cite{kulkarni_model-based_2023}. Diese Erkenntnisse unterstreichen die dringende Notwendigkeit, innovative Lösungsansätze für die Bewältigung dieser Problematik zu entwickeln. Zusätzlich ergibt sich aus der Verwendung von Bauteilen mit höheren Toleranzen eine weitere Motivation: Durch die Implementierung intelligenter Regelungsmechanismen, die diese Toleranzen kompensieren können, eröffnen sich Möglichkeiten zur Kostensenkung. Dies trägt zur Erhöhung der Wirtschaftlichkeit und Effizienz von Schaltungssystemen bei, ohne die Leistungsfähigkeit oder Zuverlässigkeit zu beeinträchtigen.
+Frühere Studien und Anwendungen haben gezeigt, dass RL-Ansätze vielversprechend für die Entwicklung von autonomen Trading-Systemen sind. Arbeiten von Brunton und Kutz sowie Almawlawe et al. haben bereits die Wirksamkeit von RL-Modellen in verschiedenen Kontexten demonstriert \cite{brunton2019data} \cite{Almawlawe2023}. Jedoch bleibt die Herausforderung bestehen, diese Modelle effizient auf handelsübliche Rechner zu übertragen und gleichzeitig ihre Leistungsfähigkeit zu maximieren.
 
 \section{Forschungsmethode und Ansatz}
-Ein vielversprechender Lösungsansatz ist die Nutzung von künstlichen neuronalen Netzen (KNN). Diese bieten, wie die Arbeiten von Brunton und Kutz sowie Almawlawe et al. nahelegen, eine hervorragende Plattform für die Steuerung komplexer Systeme und könnten somit eine Alternative zu traditionellen Reglern bieten \cite{brunton2019data} \cite{Almawlawe2023}.
+Diese Arbeit verfolgt den Ansatz, ein RL-Modell für Trading-Bots zu entwickeln, das auf einem handelsüblichen Rechner mit begrenzten Ressourcen trainiert werden kann. Hierbei wird ein spezieller Konvolutions-Layer eingesetzt, der es ermöglicht, sehr lange Datenreihen zu verarbeiten, ohne die Qualität der Ergebnisse zu beeinträchtigen. Zudem wird eine logarithmische Funktion verwendet, um die Verarbeitung der Daten im Konvolutions-Layer zu optimieren. Die Modellarchitektur basiert auf einem Deep Deterministic Policy Gradient (DDPG), der mit Konvolutions-Layern und Long Short-Term Memory (LSTM) Netzwerken trainiert wird. Dieses Modell nutzt mehrere Kanäle gleichzeitig, um Abhängigkeiten zu erfassen und zu verarbeiten.
 
-\section{Ziele und Aufbau der Arbeit}
-Diese Arbeit zielt darauf ab, die Anwendungsmöglichkeiten von KNN zur Überwachung und Kompensation der Degradation in DC-Konvertern systematisch zu untersuchen. Im Fokus stehen dabei die Architektur des neuronalen Netzes, verschiedene Trainingsmethoden und -umgebungen, sowie die spezifischen Herausforderungen und Lösungsansätze im Kontext des Trainingsprozesses.
+Um die Ressourcennutzung zu optimieren, wird eine parallele Trainingsarchitektur verwendet. Ein zentrales Actor-Critic-Netzwerk lernt aus den Erfahrungen vieler parallel laufender Simulationen, was die Speicherauslastung und die Effizienz der Trainingsprozesse verbessert.
+
+\section{Verwendete Methoden}
+In dieser Arbeit werden folgende Methoden und Modelle verwendet:
+\begin{itemize}
+    \item \textbf{Deep Deterministic Policy Gradient (DDPG)}: Ein algorithmischer Ansatz zur Entscheidungsfindung in kontinuierlichen Aktionsräumen.
+    \item \textbf{Konvolutions-Layer}: Spezielle Layer, die es ermöglichen, sehr lange Datenreihen effizient zu verarbeiten.
+    \item \textbf{Long Short-Term Memory (LSTM)}: Ein spezieller RNN-Typ zur Verarbeitung und Vorhersage von zeitsequenziellen Daten.
+    \item \textbf{Logarithmische Funktionen}: Optimierung der Datenverarbeitung im Konvolutions-Layer.
+    \item \textbf{Parallele Architektur}: Nutzung eines zentralen Actor-Critic-Netzwerks, das aus mehreren parallel laufenden Simulationen lernt.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{brunton2019data}
+Brunton, S. L., \& Kutz, J. N. (2019). Data-Driven Science and Engineering: Machine Learning, Dynamical Systems, and Control. Cambridge University Press.
+
+\bibitem{Almawlawe2023}
+Almawlawe, A., et al. (2023). Applications of Reinforcement Learning in Financial Trading. Journal of Financial Markets.
+
+\end{thebibliography}

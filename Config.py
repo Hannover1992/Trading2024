@@ -1,5 +1,6 @@
 import datetime
 import random
+import tensorflow as tf
 
 ITERATION = 500
 
@@ -11,7 +12,7 @@ TAU = ALPHA * 50
 BATCH_SIZE = 64
 EXPLOITAION = 2
 
-SYNTHETIC_DATA_LENGTH = 32
+SYNTHETIC_DATA_LENGTH = 64
 
 
 
@@ -20,8 +21,8 @@ NR_OF_LAYERS = 1
 FC1 = 50
 FC2 = 150
 
-WINDOW_SIZE = 16
-FC1_DIMS_LSTM = 4
+WINDOW_SIZE = 1024
+FC1_DIMS_LSTM = 64
 
 
 FILTER_KERNEL = 1
@@ -56,5 +57,31 @@ class Configuration:
         self.iteration = ITERATION
         date_str = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S_%f')  # %f gibt Mikrosekunden an
         rand_num = random.randint(1, 1000000)  # Generiert eine Zufallszahl zwischen 1 und 1000000
+        self.setup_gpu()
 
         self.unique_name = f"{self.unique_name}_{date_str}_{rand_num}_ALPHA_{self.alpha}_NOISE_{self.noise}"
+
+
+
+    def setup_gpu(self):
+        gpus = tf.config.experimental.list_physical_devices('GPU')
+        if gpus:
+            try:
+                # Set the GPU visible to TensorFlow and enable memory growth
+                tf.config.experimental.set_visible_devices(gpus[0], 'GPU')
+                tf.config.experimental.set_memory_growth(gpus[0], True)
+            except RuntimeError as e:
+                print("RuntimeError:", e)
+
+    def setup_cpu(self):
+        # Set TensorFlow to only use the CPU
+        try:
+            # Get a list of all GPUs
+            gpus = tf.config.experimental.list_physical_devices('GPU')
+            # Set all GPUs as not visible
+            if gpus:
+                for gpu in gpus:
+                    tf.config.experimental.set_visible_devices([], 'GPU')
+            print("Using CPU only.")
+        except RuntimeError as e:
+            print("Runtime error:", e)

@@ -6,7 +6,6 @@ from Agent.ddpg_tf2 import Agent
 from Config import Configuration, ALPHA_MIN, ALPHA_MAX, NOISE_MIN, NOISE_MAX, NUMBER_OF_PROC
 import random
 import multiprocessing
-import tensorflow as tf
 # from AnimateProgress import animated_plot
 
 from multiprocessing import Semaphore
@@ -55,7 +54,6 @@ def train_ddpg(env, agent, num_episodes, instance_id):
                 sem.release()  # Semaphor nach dem Schreiben freigeben
 
 def run_training_process(instance_id, learning_rate, noise):
-    setup_gpu()
     # setup_cpu()
     # Environment setup
     env = TradingEnv()
@@ -69,28 +67,6 @@ def run_training_process(instance_id, learning_rate, noise):
 
     print(f"Training instance {instance_id} completed")
 
-def setup_gpu():
-    gpus = tf.config.experimental.list_physical_devices('GPU')
-    if gpus:
-        try:
-            # Set the GPU visible to TensorFlow and enable memory growth
-            tf.config.experimental.set_visible_devices(gpus[0], 'GPU')
-            tf.config.experimental.set_memory_growth(gpus[0], True)
-        except RuntimeError as e:
-            print("RuntimeError:", e)
-
-def setup_cpu():
-    # Set TensorFlow to only use the CPU
-    try:
-        # Get a list of all GPUs
-        gpus = tf.config.experimental.list_physical_devices('GPU')
-        # Set all GPUs as not visible
-        if gpus:
-            for gpu in gpus:
-                tf.config.experimental.set_visible_devices([], 'GPU')
-        print("Using CPU only.")
-    except RuntimeError as e:
-        print("Runtime error:", e)
 
 def trainMultiDDPG():
     num_processes = NUMBER_OF_PROC  # Sei vorsichtig mit dieser Zahl, basierend auf verfügbaren GPUs
@@ -106,12 +82,6 @@ def trainMultiDDPG():
 
     for process in processes:
         process.join()
-
-    # if num_processes > 0:  # Falls NUMBER_OF_PROC mindestens 1 ist
-    #     # Starte den 0-ten Prozess als dedizierten Animationsprozess
-    #     animation_process = multiprocessing.Process(target=animated_plot)
-    #     animation_process.start()
-    #     animation_process.join()
 
 if __name__ == "__main__":
     # setup_cpu()

@@ -40,8 +40,6 @@ class Agent:
                                            unique_name=config.unique_name,
                                            fc1_dims=config.fc1, fc2_dims=config.fc2)
 
-        state_dim = (None, WINDOW_SIZE, 1)  # 'None' allows for variable batch size
-        action_dim = (None, 1)
 
 
 
@@ -51,8 +49,6 @@ class Agent:
         self.target_actor.compile(optimizer=Adam(learning_rate=config.alpha))
         self.target_critic.compile(optimizer=Adam(learning_rate=config.beta))
 
-        # self.actor.summary()
-        # self.critic.summary()
 
         self.update_network_parameters(tau=1)
 

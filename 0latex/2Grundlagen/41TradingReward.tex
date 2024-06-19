@@ -1,0 +1,52 @@
+\subsection{Reward-Funktion für Trading-Bots}
+
+\paragraph{Kompakte Formel:}
+\[
+\text{Reward}_t = \frac{\text{Gain}_t - \text{BestScenarioGain}_t}{V_t}
+\]
+
+wobei:
+\[
+\text{Gain}_t = V_t - V_{t-1}
+\]
+
+\[
+\text{BestScenarioGain}_t = \max\left(0, \text{PotentialGainIfFullyInvested}_t - V_{t-1}\right)
+\]
+
+\[
+\text{PotentialSharesIfFullyInvested}_t = \frac{C_{t-1} \times \text{TransactionPenalty}}{P_{t-1}} + S_{t-1}
+\]
+
+\[
+\text{PotentialGainIfFullyInvested}_t = \text{PotentialSharesIfFullyInvested}_t \times P_t \times \text{TransactionPenalty}
+\]
+
+\paragraph{Erläuterung:}
+
+1. \textbf{Realer Gewinn} (\(\text{Gain}_t\)): Die Differenz zwischen dem aktuellen Portfoliowert (\(V_t\)) und dem vorherigen Portfoliowert (\(V_{t-1}\)).
+
+2. \textbf{Bestes Szenario} (\(\text{BestScenarioGain}_t\)): Der Gewinn im besten hypothetischen Szenario, falls der Preis steigt, abzüglich des vorherigen Portfoliowerts (\(V_{t-1}\)). Falls der Preis fällt, ist der Gewinn im besten Szenario 0.
+
+   - \textbf{Hypothetischer Aktienbestand} (\(\text{PotentialSharesIfFullyInvested}_t\)): Die Anzahl der Aktien, die man hätte kaufen können, wenn man im vorherigen Zeitschritt alle verfügbaren Barmittel in Aktien investiert hätte, plus die bereits vorhandenen Aktien (\(S_{t-1}\)).
+     \[
+     \text{PotentialSharesIfFullyInvested}_t = \frac{C_{t-1} \times \text{TransactionPenalty}}{P_{t-1}} + S_{t-1}
+     \]
+
+   - \textbf{Hypothetischer Gewinn} (\(\text{PotentialGainIfFullyInvested}_t\)): Der hypothetische Gewinn, der sich aus dem hypothetischen Aktienbestand, dem aktuellen Aktienpreis und den Transaktionskosten ergibt.
+     \[
+     \text{PotentialGainIfFullyInvested}_t = \text{PotentialSharesIfFullyInvested}_t \times P_t \times \text{TransactionPenalty}
+     \]
+
+3. \textbf{Normalisierung} (\(\text{Reward}_t\)): Die Differenz zwischen dem realen Gewinn und dem Gewinn im besten Szenario, geteilt durch den aktuellen Portfoliowert. Dadurch wird die Belohnung in Relation zum aktuellen Portfoliowert gesetzt.
+
+\paragraph{Interpretation:}
+
+- \textbf{Positive Belohnung:} Der Agent hat besser abgeschnitten als im besten hypothetischen Szenario (oder zumindest gleich gut, wenn der Preis gefallen ist).
+- \textbf{Negative Belohnung:} Der Agent hat schlechter abgeschnitten als im besten hypothetischen Szenario (d.h., er hätte mehr Gewinn machen können, wenn er anders gehandelt hätte).
+- \textbf{Null Belohnung:} Der Agent hat genauso gut abgeschnitten wie im besten hypothetischen Szenario.
+
+\paragraph{Vorteile der kompakten Formel:}
+
+- \textbf{Übersichtlicher:} Die Formel ist kürzer und leichter zu erfassen.
+- \textbf{Intuitiver:} Die einzelnen Komponenten sind klarer benannt und ihre Bedeutung ist leichter verständlich.
