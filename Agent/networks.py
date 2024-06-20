@@ -64,7 +64,7 @@ class ActorNetwork(Model):
         layers = []
         for kernel_size in kernels:
             padding = 'valid'
-            if window_size - kernel_size + 1 < 64:
+            if window_size - kernel_size + 1 < FC1_DIMS_LSTM:
                 padding = 'same'
                 kernel_size = 3  # Using smaller kernel size with padding
             layers.append(Conv1D(filters=FILTER_KERNEL, kernel_size=kernel_size, strides=1, padding=padding, activation='relu', input_shape=(window_size, 1)))
@@ -73,14 +73,15 @@ class ActorNetwork(Model):
 
     def call(self, inputs):
         # Process each segment with its corresponding convolutional layers
+        special_value = inputs[:, 0, :]  # Extract the first element as the special value
+        # tf.print("Inputs:", inputs)
+
         outputs = []
         for i, conv_layers in enumerate(self.conv_layers_sets):
             segment = inputs[:, - (WINDOW_SIZE // (2 ** i)):, :]
             x = segment
             for conv in conv_layers:
                 x = conv(x)
-            # if x.shape[1] != 64:
-            #     x = tf.image.resize(x, [64, x.shape[2]])
             x = Flatten()(x)
             outputs.append(tf.expand_dims(x, axis=-1))
 
@@ -88,6 +89,8 @@ class ActorNetwork(Model):
         x = tf.concat(outputs, axis=-1)
 
         x = self.lstm(x)
+        # Concatenate the special value with the LSTM output
+        x = tf.concat([x, special_value], axis=-1)
         for layer in self.dense_layers:
             x = layer(x)
         return self.mu(x)
@@ -144,7 +147,7 @@ class CriticNetwork(Model):
         layers = []
         for kernel_size in kernels:
             padding = 'valid'
-            if window_size - kernel_size + 1 < 64:
+            if window_size - kernel_size + 1 < FC1_DIMS_LSTM:
                 padding = 'same'
                 kernel_size = 3  # Using smaller kernel size with padding
             layers.append(Conv1D(filters=FILTER_KERNEL, kernel_size=kernel_size, strides=1, padding=padding, activation='relu', input_shape=(window_size, 1)))
@@ -153,6 +156,9 @@ class CriticNetwork(Model):
 
     def call(self, inputs):
         state, action = inputs
+
+        special_value = state[:, 0, :]
+
         outputs = []
         for i, conv_layers in enumerate(self.conv_layers_sets):
             segment = state[:, - (WINDOW_SIZE // (2 ** i)):, :]
@@ -169,7 +175,7 @@ class CriticNetwork(Model):
         x = self.lstm(x)
 
         # Combine state and action
-        combined_input = Concatenate()([x, action])
+        combined_input = Concatenate()([x, action, special_value])
 
         # Pass through Dense layers
         for layer in self.dense_layers:

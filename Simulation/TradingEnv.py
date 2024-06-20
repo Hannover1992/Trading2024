@@ -81,7 +81,7 @@ class TradingEnv():
 
         self.combined_value_in_cash = self.cash + self.shares * price * TRANSACTION_PENELTY
 
-        reward = self.reward_calculator.new_calculate_reward(previous_price, price,  self.combined_value_in_cash, self.previous_combined_value_in_cash, previous_shares, previous_cash)
+        reward = self.reward_calculator.new_calculate_reward(previous_price, price, previous_shares, previous_cash, self.combined_value_in_cash, self.previous_combined_value_in_cash)
         # print("Action: ", action, "Reward: ", reward, "Cash: ", self.cash, "Shares: ", self.shares, "Price: ", price)
 
         self.current_step += 1
