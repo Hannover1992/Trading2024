@@ -2,7 +2,7 @@ import datetime
 import random
 import tensorflow as tf
 
-ITERATION = 500
+ITERATION = 2000
 
 ALPHA = 0.01
 GAMMA = 0.99
@@ -16,7 +16,7 @@ SYNTHETIC_DATA_LENGTH = 32
 
 
 
-NR_OF_LAYERS = 1
+NR_OF_LAYERS = 8
 
 FC1 = 50
 FC2 = 150
@@ -27,10 +27,10 @@ FC1_DIMS_LSTM = 4
 
 FILTER_KERNEL = 1
 
-TRANSACTION_PENELTY = 0.995
+TRANSACTION_PENELTY = 0.005
 CASH = 200
 
-NUMBER_OF_PROC = 22
+NUMBER_OF_PROC = 24
 
 NOISE = 0.7
 
@@ -67,9 +67,11 @@ class Configuration:
         gpus = tf.config.experimental.list_physical_devices('GPU')
         if gpus:
             try:
+                for gpu in gpus:
+                    tf.config.experimental.set_memory_growth(gpu, True)
                 # Set the GPU visible to TensorFlow and enable memory growth
-                tf.config.experimental.set_visible_devices(gpus[0], 'GPU')
-                tf.config.experimental.set_memory_growth(gpus[0], True)
+                # tf.config.experimental.set_visible_devices(gpus[0], 'GPU')
+                # tf.config.experimental.set_memory_growth(gpus[0], True)
             except RuntimeError as e:
                 print("RuntimeError:", e)
 

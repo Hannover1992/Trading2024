@@ -20,7 +20,13 @@ class ValueBasedReward(IRewardCalculator):
         return reward
 
 
-    def new_calculate_reward(self, previous_price, current_price, previous_shares, previous_cash, combined_value_in_cash, previous_combined_value_in_cash):
+    def new_calculate_reward(self, 
+                             previous_price, 
+                             current_price, 
+                             previous_shares, 
+                             previous_cash, 
+                             combined_value_in_cash, 
+                             previous_combined_value_in_cash):
 
         # Aktueller und vorheriger kombinierter Barwert
         current_value = combined_value_in_cash
@@ -37,7 +43,10 @@ class ValueBasedReward(IRewardCalculator):
         #falsche benennun, das ist der scenario wenn es gestigen oder gefallen ist und ich bin voll inn gegangen
         if price_change >= 0:
             #Ich habe in letzten Schritt fur all mein Geld Aktien gekauft
-            Stock_value_if_invested_all_in_cash = ((previous_shares + (previous_cash/previous_price) * TRANSACTION_PENELTY) * current_price) * TRANSACTION_PENELTY
+            # Hypothetischer Barwert, wenn alles in Aktien investiert worden wäre
+
+            previous_shares = previous_shares + (previous_cash/previous_price) * TRANSACTION_PENELTY
+            Stock_value_if_invested_all_in_cash = (previous_shares * current_price) * TRANSACTION_PENELTY
 
             # Preis gestiegen, bestes Szenario ist vollständiges Investieren in Aktien
             best_scenario_gain = Stock_value_if_invested_all_in_cash - previous_value

@@ -16,8 +16,8 @@ class MockSyntheticSinusData(IDataSource):
         np.random.seed(123)
         days = SYNTHETIC_DATA_LENGTH
         start_price = 240
-        end_price = 120
-        noise_level = 50  # Significantly increased noise
+        end_price = 240
+        noise_level = 5  # Significantly increased noise
 
         t = np.arange(0, days)
         linear_trend = np.linspace(start_price, end_price, days)
@@ -25,7 +25,7 @@ class MockSyntheticSinusData(IDataSource):
 
         # Multiple sinusoidal patterns with varying parameters
         sinusoidal = sum(
-            np.random.randint(50, 100) * np.sin(2 * np.pi * np.random.uniform(1/50, 1/3) * t)
+            np.random.randint(0-noise_level, 0 + noise_level) * np.sin(2 * np.pi * np.random.uniform(1/50, 1/3) * t)
             for _ in range(10)
         )
 
