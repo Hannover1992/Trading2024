@@ -3,7 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from Data.IDataSource import IDataSource
-from Config import SYNTHETIC_DATA_LENGTH
+from Config import DATA_LENGTH
 
 class MockSyntheticSinusData(IDataSource):
 
@@ -14,7 +14,7 @@ class MockSyntheticSinusData(IDataSource):
     def generate_synthetic_data(self) -> pd.DataFrame:
 
         np.random.seed(123)
-        days = SYNTHETIC_DATA_LENGTH
+        days = DATA_LENGTH
         start_price = 240
         end_price = 240
         noise_level = 5  # Significantly increased noise

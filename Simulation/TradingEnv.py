@@ -22,8 +22,8 @@ class TradingEnv():
         self.previous_combined_value_in_cash = self.initial_balance
 
         self.shares = 0
-        self.data = MockSyntheticSinusData().get_data()
-        # self.data = BitcoinData("Data/BitcoinData.csv").get_data()
+        # self.data = MockSyntheticSinusData().get_data()
+        self.data = BitcoinData("Data/BitcoinData.csv").get_data()
         self.current_step = 1
         self.state = State(self.data)
         self.reward_calculator = ValueBasedReward()
